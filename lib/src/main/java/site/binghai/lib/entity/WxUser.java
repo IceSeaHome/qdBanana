@@ -1,6 +1,7 @@
 package site.binghai.lib.entity;
 
 import lombok.Data;
+import site.binghai.lib.interfaces.SessionPersistent;
 
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -8,7 +9,7 @@ import javax.persistence.MappedSuperclass;
 
 @Data
 @MappedSuperclass
-public abstract class WxUser extends BaseEntity {
+public class WxUser extends BaseEntity implements SessionPersistent {
     @Id
     @GeneratedValue
     private Long id;
@@ -17,4 +18,9 @@ public abstract class WxUser extends BaseEntity {
     private String phone;
     private String openId;
     private Long refereeId; //推荐人id
+
+    @Override
+    public String sessionTag() {
+        return "WX_USER";
+    }
 }

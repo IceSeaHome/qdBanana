@@ -7,7 +7,8 @@ import java.util.Map;
 
 @Getter
 public enum PayBizEnum {
-
+    EXP_TAKE(0,"代取快递"),
+    EXP_SEND(1,"代寄快递"),
     ;
 
     private int code;
