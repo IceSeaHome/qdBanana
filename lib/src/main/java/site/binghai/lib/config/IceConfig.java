@@ -15,6 +15,8 @@ import java.util.Map;
 public class IceConfig {
     private String appName;
     private String appRoot;
+    private String wxAuthenticationUrl;
+    private String wxValidateMD5Key;
 
 
     private static Map<String, String> setupParams = new HashMap<>();

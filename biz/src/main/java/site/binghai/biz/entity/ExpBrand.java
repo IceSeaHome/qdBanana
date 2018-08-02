@@ -25,6 +25,11 @@ public class ExpBrand extends BaseEntity {
      * */
     private Long takeServiceFee;
 
+    /**
+     * 寄件单填写地址
+     * */
+    private String serviceUrl;
+
     private Boolean enableSend;
     private Boolean enableTake;
 
