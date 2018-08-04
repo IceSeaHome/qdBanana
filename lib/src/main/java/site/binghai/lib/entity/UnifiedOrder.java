@@ -6,6 +6,7 @@ import site.binghai.lib.enums.OrderStatusEnum;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.UUID;
 
 /**
@@ -30,6 +31,9 @@ public class UnifiedOrder extends BaseEntity {
     private Long userId;
     private String userName;
     private String userPhone;
+
+    @Transient
+    private Object extra;
 
     public UnifiedOrder() {
         orderId = UUID.randomUUID().toString().substring(9);

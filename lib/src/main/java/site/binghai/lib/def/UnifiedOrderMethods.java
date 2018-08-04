@@ -10,4 +10,5 @@ import site.binghai.lib.entity.UnifiedOrder;
  */
 public interface UnifiedOrderMethods {
     Object moreInfo(UnifiedOrder order);
+    Object cancel(UnifiedOrder order);
 }

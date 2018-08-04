@@ -6,7 +6,6 @@ import site.binghai.biz.entity.ExpBrand;
 import site.binghai.biz.entity.ExpTakeOrder;
 import site.binghai.biz.service.ExpBrandService;
 import site.binghai.biz.service.ExpTakeService;
-import site.binghai.biz.utils.MockUtil;
 import site.binghai.lib.controller.BaseController;
 import site.binghai.lib.entity.UnifiedOrder;
 import site.binghai.lib.entity.WxUser;
@@ -68,5 +67,13 @@ public class ExpTakeController extends BaseController {
         if (order == null || !order.getUserId().equals(user.getId())){
             return fail("认证不通过");
         }
+
+        order.setStatus(OrderStatusEnum.CANCELED.getCode());
+        UnifiedOrder unifiedOrder = unifiedOrderService.findById(order.getUnifiedId());
+        unifiedOrder.setStatus(OrderStatusEnum.CANCELED.getCode());
+        unifiedOrderService.update(unifiedOrder);
+        expTakeService.update(order);
+
+        return success(order,null);
     }
 }

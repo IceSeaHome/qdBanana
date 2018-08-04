@@ -14,6 +14,7 @@ public class ExpSendOrder extends BaseEntity {
     @Id
     @GeneratedValue
     private Long id;
+    private Long userId;
     private Long unifiedId;
     private Long totalFee;
     private Boolean paid;
