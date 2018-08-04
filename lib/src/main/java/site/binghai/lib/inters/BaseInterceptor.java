@@ -11,16 +11,16 @@ public abstract class BaseInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         HttpSession session = request.getSession();
         if (session != null) {
-            if (session.getAttribute(getFilterTag()) != null) {
+            if (session.getAttribute(getFilterTag(session)) != null) {
                 return true;
             }
         }
-        response.sendRedirect(getRedirectUrl());
+        response.sendRedirect(getRedirectUrl(session));
         return false;
     }
 
-    protected abstract String getRedirectUrl();
+    protected abstract String getRedirectUrl(HttpSession session);
 
-    protected abstract String getFilterTag();
+    protected abstract String getFilterTag(HttpSession session);
 
 }

@@ -1,10 +1,7 @@
 package site.binghai.biz.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import site.binghai.biz.entity.ExpBrand;
 import site.binghai.biz.entity.ExpTakeOrder;
 import site.binghai.biz.service.ExpBrandService;
@@ -42,10 +39,6 @@ public class ExpTakeController extends BaseController {
 
         WxUser user = getSessionPersistent(WxUser.class);
 
-        if(user == null){
-            user = MockUtil.mockWxUser();
-        }
-
         // 补充业务逻辑
         if (!expBrand.getEnableTake()) {
             return fail(expBrand.getExpName() + "不支持取件业务!");
@@ -59,12 +52,21 @@ public class ExpTakeController extends BaseController {
         UnifiedOrder unifiedOrder = unifiedOrderService.newOrder(
                 PayBizEnum.EXP_TAKE,
                 user,
-                expBrand.getExpName()+"代取",
+                expBrand.getExpName() + "代取",
                 order.getTotalFee().intValue());
 
         order.setUnifiedId(unifiedOrder.getId());
 
         order = expTakeService.save(order);
         return success(order, null);
+    }
+
+    @GetMapping("cancel")
+    public Object cancel(@RequestParam Long id) {
+        WxUser user = getSessionPersistent(WxUser.class);
+        ExpTakeOrder order = expTakeService.findById(id);
+        if (order == null || !order.getUserId().equals(user.getId())){
+            return fail("认证不通过");
+        }
     }
 }
