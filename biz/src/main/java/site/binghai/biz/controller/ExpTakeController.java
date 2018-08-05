@@ -13,6 +13,7 @@ import site.binghai.lib.enums.OrderStatusEnum;
 import site.binghai.lib.enums.PayBizEnum;
 import site.binghai.lib.service.UnifiedOrderService;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -28,6 +29,13 @@ public class ExpTakeController extends BaseController {
     private ExpTakeService expTakeService;
     @Autowired
     private UnifiedOrderService unifiedOrderService;
+
+    @GetMapping("prepare")
+    public Object prepare() {
+        Map map = new HashMap();
+
+        return success(map, null);
+    }
 
     @PostMapping("create")
     public Object create(@RequestBody Map map) {
@@ -49,10 +57,10 @@ public class ExpTakeController extends BaseController {
         order.setUserId(user.getId());
 
         UnifiedOrder unifiedOrder = unifiedOrderService.newOrder(
-                PayBizEnum.EXP_TAKE,
-                user,
-                expBrand.getExpName() + "代取",
-                order.getTotalFee().intValue());
+            PayBizEnum.EXP_TAKE,
+            user,
+            expBrand.getExpName() + "代取",
+            order.getTotalFee().intValue());
 
         order.setUnifiedId(unifiedOrder.getId());
 

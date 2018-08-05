@@ -13,6 +13,7 @@ import site.binghai.lib.enums.OrderStatusEnum;
 import site.binghai.lib.enums.PayBizEnum;
 import site.binghai.lib.service.UnifiedOrderService;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -24,6 +25,13 @@ public class ExpSendController extends BaseController {
     private ExpBrandService expBrandService;
     @Autowired
     private UnifiedOrderService unifiedOrderService;
+
+    @GetMapping("prepare")
+    public Object prepare() {
+        Map map = new HashMap();
+
+        return success(map, null);
+    }
 
     @PostMapping("create")
     public Object create(@RequestBody Map map) {

@@ -7,6 +7,8 @@ import site.binghai.lib.entity.UnifiedOrder;
 import site.binghai.lib.enums.OrderStatusEnum;
 import site.binghai.lib.service.BaseService;
 
+import java.util.List;
+
 @Service
 public class ExpTakeService extends BaseService<ExpTakeOrder> implements UnifiedOrderMethods {
 
@@ -23,5 +25,11 @@ public class ExpTakeService extends BaseService<ExpTakeOrder> implements Unified
         takeOrder.setStatus(OrderStatusEnum.CANCELED.getCode());
         update(takeOrder);
         return takeOrder;
+    }
+
+    public List<ExpTakeOrder> findByStatus(Integer status, Integer page, Integer pageSize) {
+        ExpTakeOrder order = new ExpTakeOrder();
+        order.setStatus(status);
+        return sortQuery(order,"id",true);
     }
 }

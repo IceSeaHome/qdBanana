@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.binghai.biz.service.ExpSendService;
 import site.binghai.biz.service.ExpTakeService;
+import site.binghai.lib.config.IceConfig;
 import site.binghai.lib.controller.BaseController;
 import site.binghai.lib.entity.UnifiedOrder;
 import site.binghai.lib.entity.WxUser;
@@ -26,6 +27,8 @@ public class UnifiedOrderController extends BaseController {
     private ExpTakeService takeService;
     @Autowired
     private ExpSendService sendService;
+    @Autowired
+    private IceConfig iceConfig;
 
     @GetMapping("list")
     public Object list(@RequestParam Integer page, @RequestParam Integer pageSize) {
@@ -33,6 +36,11 @@ public class UnifiedOrderController extends BaseController {
         List<UnifiedOrder> data = unifiedOrderService.findByUserIdOrderByIdDesc(user.getId(), page, pageSize);
         data.forEach(v -> v.setExtra(moreInfo(v)));
         return success(data, null);
+    }
+
+    @GetMapping("pay")
+    public Object pay(@RequestParam Long unifiedId) {
+        return "redirect:" + iceConfig.getWxPayUrl() + "?unifiedId=" + unifiedId;
     }
 
     private Object moreInfo(UnifiedOrder unifiedOrder) {
