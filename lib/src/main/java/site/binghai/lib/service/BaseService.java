@@ -15,6 +15,7 @@ import javax.transaction.Transactional;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public abstract class BaseService<T extends BaseEntity> extends BaseBean {
     @Autowired
@@ -96,8 +97,9 @@ public abstract class BaseService<T extends BaseEntity> extends BaseBean {
     public T queryOne(T example) {
         example.setCreated(null);
         example.setCreatedTime(null);
-        List<T> ls = query(example);
-        return (ls == null || ls.size() == 0) ? null : ls.get(0);
+        Example<T> ex = Example.of(example);
+        Optional<T> rs = getDao().findOne(ex);
+        return rs == null ? null : rs.orElse(null);
     }
 
     public List<T> sortQuery(T example, String sortField, Boolean desc) {

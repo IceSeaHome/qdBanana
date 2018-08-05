@@ -26,6 +26,12 @@ public class UnifiedOrderService extends BaseService<UnifiedOrder> {
         return dao;
     }
 
+    public List<UnifiedOrder> findByUserIdOrderByIdDesc(Long userId, Integer page, Integer pageSize) {
+        if (page == null || page < 0) page = 0;
+        if (pageSize == null || pageSize < 0) pageSize = 100;
+        return dao.findAllByUserIdOrderByIdDesc(userId, new PageRequest(page, pageSize));
+    }
+
     public List<UnifiedOrder> findByAppCode(PayBizEnum pbe, Integer page, Integer pageSize) {
         if (page == null || page < 0) page = 0;
         if (pageSize == null || pageSize < 0) pageSize = 100;

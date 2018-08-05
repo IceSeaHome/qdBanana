@@ -55,25 +55,4 @@ public class ExpSendController extends BaseController {
         order = expSendService.save(order);
         return success(order, null);
     }
-
-    @GetMapping("cancel")
-    public Object cancel(@RequestParam Long id) {
-        WxUser user = getSessionPersistent(WxUser.class);
-        ExpSendOrder order = expSendService.findById(id);
-        if (order == null || !order.getUserId().equals(user.getId())){
-            return fail("认证不通过");
-        }
-
-        if(order.getStatus() < OrderStatusEnum.PROCESSING.getCode()){
-
-        }
-
-        order.setStatus(OrderStatusEnum.CANCELED.getCode());
-        UnifiedOrder unifiedOrder = unifiedOrderService.findById(order.getUnifiedId());
-        unifiedOrder.setStatus(OrderStatusEnum.CANCELED.getCode());
-        unifiedOrderService.update(unifiedOrder);
-        expSendService.update(order);
-
-        return success(order,null);
-    }
 }

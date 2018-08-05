@@ -14,6 +14,8 @@ import site.binghai.lib.enums.OrderStatusEnum;
 import site.binghai.lib.enums.PayBizEnum;
 import site.binghai.lib.service.UnifiedOrderService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/user/unified/")
 public class UnifiedOrderController extends BaseController {
@@ -23,7 +25,25 @@ public class UnifiedOrderController extends BaseController {
     @Autowired
     private ExpTakeService takeService;
     @Autowired
-    private ExpSendService expSendService;
+    private ExpSendService sendService;
+
+    @GetMapping("list")
+    public Object list(@RequestParam Integer page, @RequestParam Integer pageSize) {
+        WxUser user = getSessionPersistent(WxUser.class);
+        List<UnifiedOrder> data = unifiedOrderService.findByUserIdOrderByIdDesc(user.getId(), page, pageSize);
+        data.forEach(v -> v.setExtra(moreInfo(v)));
+        return success(data, null);
+    }
+
+    private Object moreInfo(UnifiedOrder unifiedOrder) {
+        switch (PayBizEnum.valueOf(unifiedOrder.getAppCode())) {
+            case EXP_SEND:
+                return sendService.moreInfo(unifiedOrder);
+            case EXP_TAKE:
+                return takeService.moreInfo(unifiedOrder);
+        }
+        return null;
+    }
 
     @GetMapping("cancel")
     public Object cancel(@RequestParam Long unifiedId) {
@@ -75,20 +95,27 @@ public class UnifiedOrderController extends BaseController {
     }
 
     private Object cancelBizOrder(UnifiedOrder unifiedOrder) {
+        Object data = null;
+        //todo 取消成功通知
         switch (PayBizEnum.valueOf(unifiedOrder.getAppCode())) {
             case EXP_SEND:
-                return expSendService.cancel(unifiedOrder);
+                data = sendService.cancel(unifiedOrder);
+                break;
             case EXP_TAKE:
-                return expSendService.cancel(unifiedOrder);
+                data = takeService.cancel(unifiedOrder);
+                break;
             default:
                 return fail("取消失败-BIZ-NOT-SUPPORT");
         }
+
+        return success(data, "取消成功");
     }
 
     /**
      * 退款
      */
     private boolean refund(UnifiedOrder unifiedOrder) {
+        //TODO 退款成功通知
         return false;
     }
 }
