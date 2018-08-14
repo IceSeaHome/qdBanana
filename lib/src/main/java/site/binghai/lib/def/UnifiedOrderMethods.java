@@ -8,7 +8,7 @@ import site.binghai.lib.entity.UnifiedOrder;
  * GitHub: https://github.com/IceSeaOnly
  * 统一订单的具体子订单实体需实现该接口
  */
-public interface UnifiedOrderMethods {
-    Object moreInfo(UnifiedOrder order);
-    Object cancel(UnifiedOrder order);
+public interface UnifiedOrderMethods<T> {
+    T moreInfo(UnifiedOrder order);
+    T cancel(UnifiedOrder order);
 }

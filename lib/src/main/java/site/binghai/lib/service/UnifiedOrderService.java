@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import site.binghai.lib.entity.UnifiedOrder;
 import site.binghai.lib.entity.WxUser;
 import site.binghai.lib.enums.OrderStatusEnum;
 import site.binghai.lib.enums.PayBizEnum;
 import site.binghai.lib.service.dao.UnifiedOrderDao;
+import site.binghai.lib.utils.CompareUtils;
 
 import java.util.List;
 
@@ -98,5 +100,25 @@ public class UnifiedOrderService extends BaseService<UnifiedOrder> {
 
         res.addAll(query(unifiedOrder));
         return res;
+    }
+
+    @Transactional
+    public boolean cancel(Long unifiedId) {
+        UnifiedOrder order = findById(unifiedId);
+        if (order == null) return false;
+        if (order.getStatus().equals(OrderStatusEnum.CANCELED.getCode())) return false;
+
+        boolean execute = true;
+        if (CompareUtils.inAny(OrderStatusEnum.valueOf(order.getStatus()),
+                OrderStatusEnum.COMPLETE, OrderStatusEnum.PAIED)) {
+            //TODO refund
+            //if error ,execute = false;
+        }
+
+        if (execute) {
+            order.setStatus(OrderStatusEnum.CANCELED.getCode());
+            update(order);
+        }
+        return execute;
     }
 }
