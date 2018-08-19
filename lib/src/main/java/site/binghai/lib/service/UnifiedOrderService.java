@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import site.binghai.lib.entity.UnifiedOrder;
 import site.binghai.lib.entity.WxUser;
 import site.binghai.lib.enums.OrderStatusEnum;
@@ -12,6 +11,7 @@ import site.binghai.lib.enums.PayBizEnum;
 import site.binghai.lib.service.dao.UnifiedOrderDao;
 import site.binghai.lib.utils.CompareUtils;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 /**

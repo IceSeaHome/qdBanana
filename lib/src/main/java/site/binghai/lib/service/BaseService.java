@@ -27,6 +27,11 @@ public abstract class BaseService<T extends BaseEntity> extends BaseBean {
         return obj.toJavaObject(getTypeArguement());
     }
 
+    @Transactional
+    public T newAndSave(Map map) {
+        return save(newInstance(map));
+    }
+
     protected JpaRepository<T, Long> getDao() {
         if (daoHolder != null) {
             return daoHolder;
