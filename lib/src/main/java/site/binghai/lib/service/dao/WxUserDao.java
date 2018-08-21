@@ -6,5 +6,5 @@ import site.binghai.lib.entity.WxUser;
 
 
 public interface WxUserDao extends JpaRepository<WxUser, Long> {
-
+    Long countByCreatedBetween(Long createdAfter,Long createdBefore);
 }

@@ -87,6 +87,18 @@ public class TimeTools {
         return Integer.parseInt(df.format(null_ts == null ? System.currentTimeMillis() : null_ts));
     }
 
+
+    public static Long[] today() {
+        return new Long[]{getTimesmorning(), getTimesnight()};
+    }
+
+    public static Long[] yesterday() {
+        Long[] today = today();
+        today[0] -= 86400000L;
+        today[1] -= 86400000L;
+        return today;
+    }
+
     //获得当天0点时间
     public static Long getTimesmorning() {
         Calendar cal = Calendar.getInstance();

@@ -121,4 +121,16 @@ public class UnifiedOrderService extends BaseService<UnifiedOrder> {
         }
         return execute;
     }
+
+    public List<UnifiedOrder> findByAppCodeAndCreateBetween(PayBizEnum biz, Long timesmorning, Long timesnight) {
+        return dao.findAllByAppCodeAndCreatedBetween(biz.getCode(), timesmorning, timesnight);
+    }
+
+    public long countByStatusIn(OrderStatusEnum... statusEnums) {
+        long sum = 0l;
+        for (OrderStatusEnum status : statusEnums) {
+            sum += dao.countByStatus(status.getCode());
+        }
+        return sum;
+    }
 }

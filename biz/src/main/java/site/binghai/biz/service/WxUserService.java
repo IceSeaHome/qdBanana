@@ -38,4 +38,8 @@ public class WxUserService extends BaseService<WxUser> {
     protected JpaRepository<WxUser, Long> getDao() {
         return wxUserDao;
     }
+
+    public long countByCreatedBetween(Long[] between) {
+        return wxUserDao.countByCreatedBetween(between[0], between[1]);
+    }
 }
