@@ -42,4 +42,8 @@ public class ExpTakeService extends BaseService<ExpTakeOrder> implements Unified
     public List<ExpTakeOrder> findByStatusIdDesc(Integer status, Integer page, Integer pageSize) {
         return dao.findAllByStatusOrderByIdDesc(status, new PageRequest(page, pageSize));
     }
+
+    public List<ExpTakeOrder> findTimeBetween(Long timeStart, Long timeEnd) {
+        return dao.findByCreatedBetween(timeStart, timeEnd);
+    }
 }

@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface ExpTakeDao extends JpaRepository<ExpTakeOrder, Long> {
     List<ExpTakeOrder> findAllByStatusOrderByIdDesc(Integer status, Pageable pageable);
+
+    List<ExpTakeOrder> findByCreatedBetween(Long start,Long end);
 }

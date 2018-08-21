@@ -37,6 +37,10 @@ public class ExpSendService extends BaseService<ExpSendOrder> implements Unified
         return expSendOrder;
     }
 
+    public List<ExpSendOrder> findTimeBetween(Long timeStart, Long timeEnd) {
+        return dao.findByCreatedBetween(timeStart, timeEnd);
+    }
+
     public List<ExpSendOrder> findByStatusIdDesc(Integer status, Integer page, Integer pageSize) {
         return dao.findAllByStatusOrderByIdDesc(status, new PageRequest(page, pageSize));
     }

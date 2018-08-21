@@ -31,10 +31,10 @@ public class StatisticsController extends BaseController {
         Long[] today = TimeTools.today();
         Long[] yesterday = TimeTools.yesterday();
 
-        data.putAll(getBizIndexOfTimeBetween(PayBizEnum.EXP_TAKE, today));
-        data.putAll(getBizIndexOfTimeBetween(PayBizEnum.EXP_TAKE, yesterday));
-        data.putAll(getBizIndexOfTimeBetween(PayBizEnum.EXP_SEND, today));
-        data.putAll(getBizIndexOfTimeBetween(PayBizEnum.EXP_SEND, yesterday));
+        for (PayBizEnum value : PayBizEnum.values()) {
+            data.putAll(getBizIndexOfTimeBetween(value, today));
+            data.putAll(getBizIndexOfTimeBetween(value, yesterday));
+        }
 
         //总客户数，总支付数
         long wxUserSum = wxUserService.count();
