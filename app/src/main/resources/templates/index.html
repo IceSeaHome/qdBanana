@@ -1,0 +1,105 @@
+﻿<html xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+          name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <meta content="telephone=no" name="format-detection"/>
+    <title>帮拿拿</title>
+    <link rel="stylesheet" type="text/css" href="/css/base.css">
+    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script src="/js/common.js"></script>
+    <!--banner 脚本-->
+    <script src="/js/TouchSlide.1.1.js"></script>
+    <!--banner 脚本-->
+</head>
+
+<body>
+
+<!--header-end-->
+
+<div class="container" id="container">
+
+    <!--Banner-->
+    <div class="banner" id="index-banner">
+        <div class="banner-pics">
+            <ul class="banner-pics-list OnSale-banner">
+                <li><a href="#"><img src="/images/ind-banner.jpg" alt=""/></a></li>
+                <li><a href="#"><img src="/images/ind-banner.jpg" alt=""/></a></li>
+                <li><a href="#"><img src="/images/ind-banner.jpg" alt=""/></a></li>
+            </ul>
+        </div>
+        <ul class="banner-tit">
+            <li class="on"></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+    <script type="text/javascript">
+        TouchSlide({
+            slideCell: "#index-banner",
+            titCell: ".banner-tit li",//开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+            mainCell: ".banner-pics-list",
+            effect: "left",
+            autoPlay: true,//自动播放
+            //autoPage:true, //自动分页
+        })
+    </script>
+    <!--banner-end-->
+
+
+    <!--代寄下单-->
+    <div class="ind-item">
+        <a href="send.html">
+            <div class="ind-item-img"><img src="/images/eszh.png"></div>
+            <div class="ind-item-txt">
+                <h3 class="red">代寄下单</h3>
+                <p>代寄下单。。。。。。。。</p>
+            </div>
+        </a>
+    </div>
+    <!--代取下单-->
+    <div class="ind-item">
+        <a href="take.html">
+            <div class="ind-item-img"><img src="/images/hyps.png"></div>
+            <div class="ind-item-txt">
+                <h3 class="green">代取下单</h3>
+                <p>代取下单。。。。。。。</p>
+            </div>
+        </a>
+    </div>
+
+</div>
+<!--container-end-->
+
+<!--footer-->
+<footer class="footer" id="footer">
+    <ul class="footnav box-flex">
+        <li class="on"><a href="index.html" class="home"><i></i><span class="full-block">首页</span></a></li>
+        <li><a href="my-order.html" class="foot-order"><i></i><span class="full-block">订单</span></a></li>
+        <li><a href="my.html" class="my"><i></i><span class="full-block">我的</span></a></li>
+    </ul>
+</footer>
+<!--footer-end-->
+<!--栏目更多-->
+<script type="text/javascript">
+    $(".ind-nav").each(function () {
+        var self = $(this);
+        var n = self.find("ul li").length;
+        if (n <= 8) {
+            self.find(".more").addClass("hide-more");
+        } else {
+            self.find(".more").removeClass("hide-more");
+        }
+        self.find(".more").click(function () {
+            self.find("ul").toggleClass("intro");
+            self.find(".more").toggleClass("add-more");
+        });
+    });
+</script>
+<!--栏目更多-->
+</body>
+</html>
