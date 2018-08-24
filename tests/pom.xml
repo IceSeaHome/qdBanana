@@ -15,7 +15,7 @@
         <dependency>
             <groupId>site.binghai</groupId>
             <artifactId>biz</artifactId>
-            <version>${projectVersion}</version>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
