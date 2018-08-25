@@ -1,6 +1,8 @@
 package site.binghai.biz.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import site.binghai.biz.entity.ExpBrand;
 import site.binghai.biz.entity.ExpTakeOrder;
@@ -19,7 +21,7 @@ import java.util.Map;
 /**
  * 取件业务逻辑
  */
-@RestController
+@Controller
 @RequestMapping("/user/expTake/")
 public class ExpTakeController extends BaseController {
 
@@ -31,10 +33,8 @@ public class ExpTakeController extends BaseController {
     private UnifiedOrderService unifiedOrderService;
 
     @GetMapping("prepare")
-    public Object prepare() {
-        Map map = new HashMap();
-
-        return success(map, null);
+    public String prepare(ModelMap map) {
+        return "expTake";
     }
 
     @PostMapping("create")

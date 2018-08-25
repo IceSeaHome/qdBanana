@@ -27,15 +27,12 @@
     <div class="banner" id="index-banner">
         <div class="banner-pics">
             <ul class="banner-pics-list OnSale-banner">
-                <li><a href="#"><img src="http://cdn.binghai.site/o_1cll4lqregvqg961id301b87a.png" alt=""/></a></li>
-                <li><a href="#"><img src="http://cdn.binghai.site/o_1cll4lqregvqg961id301b87a.png" alt=""/></a></li>
-                <li><a href="#"><img src="http://cdn.binghai.site/o_1cll4lqregvqg961id301b87a.png" alt=""/></a></li>
+                <li th:each="img:${imgs}"><a ><img th:src="${img.url}" alt=""/></a></li>
             </ul>
         </div>
         <ul class="banner-tit">
             <li class="on"></li>
-            <li></li>
-            <li></li>
+            <li th:each="img,itr:${imgs}" th:if="${itr.index > 0}"></li>
         </ul>
     </div>
     <script type="text/javascript">

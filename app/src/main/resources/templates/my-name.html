@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta content="telephone=no" name="format-detection" />
+<title>我的姓名</title>
+<link rel="stylesheet" type="text/css" href="css/base.css">
+<link rel="stylesheet" type="text/css" href="css/common.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script src="js/common.js"></script>
+</head>
+
+<body>
+<form>
+<header class="header header-save" id="header">
+<a href="javascript:history.go(-1)" target=_self class="back">返回</a>
+<h1>我的姓名</h1>
+<button type="submit">保存</button>
+</header>
+<!--header-end-->
+
+<div class="container" id="container"> 
+
+<div class="modify">
+ <input id="username" type="tel" name="username" class="username" value="我的姓名" required><a href="javascript:" class="clear-close" id="clear-close" onclick="javascript:document.getElementById('username').value='';document.getElementById('username').focus();" value="clear"></a>
+</div>
+
+</div>
+<!--container-end-->
+</form>
+</body>
+</html>

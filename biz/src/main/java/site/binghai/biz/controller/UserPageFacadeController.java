@@ -1,6 +1,8 @@
 package site.binghai.biz.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,16 +12,17 @@ import site.binghai.lib.service.ImageService;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/user/pageFacade/")
+@Controller
+@RequestMapping("/user/my/")
 public class UserPageFacadeController extends BaseController {
 
     @Autowired
     private ImageService imageService;
 
-    @GetMapping("listRollingImage")
-    public Object listRollingImage() {
+    @RequestMapping("index")
+    public String listRollingImage(ModelMap map) {
         List<Image> imageList = imageService.listRollingImage();
-        return success(imageList, null);
+        map.put("imgs", imageList);
+        return "index";
     }
 }

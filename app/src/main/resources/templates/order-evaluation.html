@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta content="telephone=no" name="format-detection" />
+<title>订单评价</title>
+<link rel="stylesheet" type="text/css" href="css/base.css">
+<link rel="stylesheet" type="text/css" href="css/common.css">
+<script type="text/javascript" src="js/jquery.min.js" ></script>
+<script src="js/common.js"></script>
+</head>
+
+<body>
+<header class="header" id="header">
+<a href="javascript:history.go(-1)" target=_self class="back">返回</a>
+<h1>订单评价</h1>
+</header>
+<!--header-end-->
+
+<div class="container" id="container"> 
+  <form>
+    <div class="add-class order-evaluation">
+        <div class="maintenance-reservation-textarea online-evaluation-textarea">
+           <textarea class="textarea" id="textarea" autofocus="autofocus"></textarea>
+           <div class="layer"><span>师傅的服务如何，服务周到吗，服务态度好吗，技术过关吗？</span></div>
+        </div>
+        <!--传照片按钮开始-->
+        <div class="upload-photos">
+           <span></span>
+        </div>
+        <!--传照片按钮结束-->
+        <div class="service-evaluation clearfix"><span>服务评价:</span><span class="sa_star"><i class="sa_d" style="width:70%;"></i></span></div>
+        <button type="submit" class="confirm-payment">发表评价</button>
+    </div>
+  </form>  
+</div>
+<!--container-end-->
+</body>
+</html>
