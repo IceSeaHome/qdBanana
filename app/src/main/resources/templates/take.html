@@ -1,47 +1,91 @@
-<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <html>
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
 
-  <title>代取快递</title>
-  <link rel="stylesheet" type="text/css" href="css/base.css">
-  <link rel="stylesheet" type="text/css" href="css/common.css">
-  <script type="text/javascript" src="js/jquery.min.js" ></script>
-  <script src="js/common.js"></script>
-  <!--banner 脚本-->
-  <script src="js/TouchSlide.1.1.js"></script>
-  <!--banner 脚本-->
-  <link rel="stylesheet" type="text/css" href="http://cdn.binghai.site/o_1clq1itcp1uf5189g2cg1rhq1g2oa.css">
-  <script src="http://cdn.binghai.site/o_1clq1jn5emrb1d0cg37h4pgkia.js"></script>
+    <title>代取快递</title>
+    <link rel="stylesheet" type="text/css" href="/css/base.css">
+    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script src="/js/common.js"></script>
+    <!--banner 脚本-->
+    <script src="/js/TouchSlide.1.1.js"></script>
+    <!--banner 脚本-->
+    <link rel="stylesheet" type="text/css" href="http://cdn.binghai.site/o_1clq1itcp1uf5189g2cg1rhq1g2oa.css">
+    <script src="http://cdn.binghai.site/o_1clq1jn5emrb1d0cg37h4pgkia.js"></script>
 </head>
 
 <body>
 <header class="header" id="header">
-  <a href="javascript:history.go(-1)" target=_self class="back">返回</a>
-  <h1>代取快递</h1>
+    <a href="javascript:history.go(-1)" target=_self class="back">返回</a>
+    <h1>代取快递</h1>
 </header>
 <!--header-end-->
 
 <div class="container" id="container">
 
-  <div class="personal-data1">
-    <ul>
-      <li><a href="javascript:inputIntoMap('expTakeName')"><span>收件人</span><em id="expTakeName">张大山</em></a></li>
-      <li><a href="javascript:inputIntoMap('expTakePhone')"><span>手机号</span><em id="expTakePhone">18056000000</em></a></li>
-      <li><a href="javascript:selectExp()"><span>选择快递</span><em id="expName">圆通快递</em></a></li>
-      <li><a href="javascript:inputIntoMap('smsText')"><span>取件码</span><em id="smsText">260799</em></a></li>
-      <li><a href="javascript:inputIntoMap('sendAddr')"><span>配送地址</span><em id="sendAddr">260799</em></a></li>
-      <li><a href="javascript:inputIntoMap('sendPhone')"><span>配送手机</span><em id="sendPhone">18056000000</em></a></li>
-      <li><a href="javascript:inputIntoMap('remark')"><span>备注</span><em id="remark">18056000000</em></a></li>
-    </ul>
-  </div>
+    <div class="personal-data1">
+        <ul>
+            <li>
+                <a href="javascript:inputIntoMap('expTakeName')">
+                    <span>收件人</span><em id="expTakeName" th:text="${wxUser.userName}">张大山</em>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:inputIntoMap('expTakePhone')">
+                    <span>手机号</span><em id="expTakePhone" th:text="${wxUser.phone}">18056000000</em>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:selectExp()">
+                    <span>选择快递</span><em id="expName">点击选择</em>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:inputIntoMap('smsText')">
+                    <span>取件码</span><em id="smsText">点击输入</em>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:inputIntoMap('sendAddr')">
+                    <span>配送地址</span><em id="sendAddr" th:text="${wxUser.usuallyAddress}">260799</em>
+                </a></li>
+            <li>
+                <a href="javascript:inputIntoMap('sendPhone')">
+                    <span>配送手机</span><em id="sendPhone" th:text="${wxUser.phone}">18056000000</em>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:inputIntoMap('remark')">
+                    <span>备注</span><em id="remark">点击输入</em>
+                </a></li>
+        </ul>
+    </div>
 
+    <a class="pay" href="javascript:submit()">立即下单</a>
 </div>
 
-<script type="text/javascript">
-    function getTitle(fid){
-        switch(fid){
+<script type="text/javascript" th:inline="javascript">
+    function submit() {
+        $.ajax({
+            type:"POST",
+            url:'/user/expTake/create',
+            contentType:"application/json",
+            dataType:"json",
+            data:JSON.stringify(dataMap),
+            success:function(data){
+                if(data.status == 'SUCCESS'){
+                    alert(true,'下单成功','OJBK');
+                }else{
+                    alert(false,'下单失败',data.msg);
+                }
+            }
+        });
+    }
+    
+    function getTitle(fid) {
+        switch (fid) {
             case 'expTakeName':
                 return "收件人";
             case 'expTakePhone':
@@ -61,10 +105,16 @@
     }
 
     var dataMap = {
-        expTakeName:'FFF',
+        expTakeName:[[${wxUser.userName}]],
+        expTakePhone:[[${wxUser.phone}]],
+        sendAddr:[[${wxUser.usuallyAddress}]],
+        sendPhone:[[${wxUser.phone}]],
+        remark:"",
     };
 
-    function inputIntoMap(fid){
+    var expMap = [[${expList}]];
+
+    function inputIntoMap(fid) {
         swal({
             title: getTitle(fid),
             input: 'text',
@@ -79,37 +129,32 @@
                 })
             }
         }).then(function (result) {
-            $("#"+fid).text(result)
+            $("#" + fid).text(result)
             dataMap[fid] = result;
             console.log(dataMap);
         })
     }
-    function selectExp(){
+
+    function selectExp() {
         swal({
-            title: '选择乌克兰',
+            title: '选择快递',
             input: 'select',
-            inputOptions: {
-                'SRB': '塞尔维亚',
-                'UKR': '乌克兰',
-                'HRV': '克罗地亚'
-            },
-            inputPlaceholder: '请选择国家',
+            inputOptions: expMap,
+            inputPlaceholder: '请选择快递',
             showCancelButton: true,
-            inputValidator: function (value) {
-                return new Promise(function (resolve, reject) {
-                    if (value === 'UKR') {
-                        resolve()
-                    } else {
-                        reject('你需要选择乌克兰:)')
-                    }
-                })
-            }
+
         }).then(function (result) {
-            swal({
-                type: 'success',
-                html: '你的选择是：' + result
-            })
+            dataMap['expId'] = result;
+            $("#expName").text(expMap[result]);
         })
+    }
+    
+    function alert(success, title, msg) {
+        swal(
+            title,
+            msg,
+            success ? 'success' : 'error'
+        )
     }
 </script>
 </body>

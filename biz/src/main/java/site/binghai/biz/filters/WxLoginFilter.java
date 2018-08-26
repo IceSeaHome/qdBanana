@@ -7,7 +7,7 @@ import javax.servlet.http.HttpSession;
 
 
 public class WxLoginFilter extends BaseInterceptor {
-    private static final String tag = "WX_USER";
+    private static final String tag = "_WX_USER_";
 
     @Override
     protected String getRedirectUrl(HttpSession session) {
