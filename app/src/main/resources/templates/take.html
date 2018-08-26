@@ -1,39 +1,116 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
-<meta content="yes" name="apple-mobile-web-app-capable" />
-<meta content="black" name="apple-mobile-web-app-status-bar-style" />
-<meta content="telephone=no" name="format-detection" />
-<title>代取快递</title>
-<link rel="stylesheet" type="text/css" href="css/base.css">
-<link rel="stylesheet" type="text/css" href="css/common.css">
-<script type="text/javascript" src="js/jquery.min.js" ></script>
-<script src="js/common.js"></script>
-<!--banner 脚本-->
-<script src="js/TouchSlide.1.1.js"></script>
-<!--banner 脚本-->
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+
+  <title>代取快递</title>
+  <link rel="stylesheet" type="text/css" href="css/base.css">
+  <link rel="stylesheet" type="text/css" href="css/common.css">
+  <script type="text/javascript" src="js/jquery.min.js" ></script>
+  <script src="js/common.js"></script>
+  <!--banner 脚本-->
+  <script src="js/TouchSlide.1.1.js"></script>
+  <!--banner 脚本-->
+  <link rel="stylesheet" type="text/css" href="http://cdn.binghai.site/o_1clq1itcp1uf5189g2cg1rhq1g2oa.css">
+  <script src="http://cdn.binghai.site/o_1clq1jn5emrb1d0cg37h4pgkia.js"></script>
 </head>
 
 <body>
 <header class="header" id="header">
-<a href="javascript:history.go(-1)" target=_self class="back">返回</a>
-<h1>代取快递</h1>
+  <a href="javascript:history.go(-1)" target=_self class="back">返回</a>
+  <h1>代取快递</h1>
 </header>
 <!--header-end-->
 
-<div class="container" id="container"> 
+<div class="container" id="container">
 
   <div class="personal-data1">
     <ul>
-      <li><a href="my-name.html"><span>联系人</span><em>张大山</em></a></li>
-      <li><a href="my-name.html"><span>选择快递</span><em>圆通快递</em></a></li>
-      <li><a href="my-name.html"><span>取件码</span><em>260799</em></a></li>
-      <li><a href="my-name.html"><span>手机号</span><em>18056000000</em></a></li>
+      <li><a href="javascript:inputIntoMap('expTakeName')"><span>收件人</span><em id="expTakeName">张大山</em></a></li>
+      <li><a href="javascript:inputIntoMap('expTakePhone')"><span>手机号</span><em id="expTakePhone">18056000000</em></a></li>
+      <li><a href="javascript:selectExp()"><span>选择快递</span><em id="expName">圆通快递</em></a></li>
+      <li><a href="javascript:inputIntoMap('smsText')"><span>取件码</span><em id="smsText">260799</em></a></li>
+      <li><a href="javascript:inputIntoMap('sendAddr')"><span>配送地址</span><em id="sendAddr">260799</em></a></li>
+      <li><a href="javascript:inputIntoMap('sendPhone')"><span>配送手机</span><em id="sendPhone">18056000000</em></a></li>
+      <li><a href="javascript:inputIntoMap('remark')"><span>备注</span><em id="remark">18056000000</em></a></li>
     </ul>
   </div>
 
 </div>
+
+<script type="text/javascript">
+    function getTitle(fid){
+        switch(fid){
+            case 'expTakeName':
+                return "收件人";
+            case 'expTakePhone':
+                return "手机号";
+            case 'expName':
+                return "选择快递";
+            case 'smsText':
+                return "取件码";
+            case 'sendAddr':
+                return "配送地址";
+            case 'sendPhone':
+                return "配送手机";
+            case 'remark':
+                return "备注";
+        }
+        return "请输入";
+    }
+
+    var dataMap = {
+        expTakeName:'FFF',
+    };
+
+    function inputIntoMap(fid){
+        swal({
+            title: getTitle(fid),
+            input: 'text',
+            showCancelButton: true,
+            inputValidator: function (value) {
+                return new Promise(function (resolve, reject) {
+                    if (value) {
+                        resolve()
+                    } else {
+                        reject('这是个必填项哦')
+                    }
+                })
+            }
+        }).then(function (result) {
+            $("#"+fid).text(result)
+            dataMap[fid] = result;
+            console.log(dataMap);
+        })
+    }
+    function selectExp(){
+        swal({
+            title: '选择乌克兰',
+            input: 'select',
+            inputOptions: {
+                'SRB': '塞尔维亚',
+                'UKR': '乌克兰',
+                'HRV': '克罗地亚'
+            },
+            inputPlaceholder: '请选择国家',
+            showCancelButton: true,
+            inputValidator: function (value) {
+                return new Promise(function (resolve, reject) {
+                    if (value === 'UKR') {
+                        resolve()
+                    } else {
+                        reject('你需要选择乌克兰:)')
+                    }
+                })
+            }
+        }).then(function (result) {
+            swal({
+                type: 'success',
+                html: '你的选择是：' + result
+            })
+        })
+    }
+</script>
 </body>
 </html>
