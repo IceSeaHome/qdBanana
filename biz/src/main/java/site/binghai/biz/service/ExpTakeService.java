@@ -10,6 +10,7 @@ import site.binghai.lib.entity.UnifiedOrder;
 import site.binghai.lib.enums.OrderStatusEnum;
 import site.binghai.lib.enums.PayBizEnum;
 import site.binghai.lib.service.BaseService;
+import site.binghai.lib.utils.StringUtil;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -46,14 +47,14 @@ public class ExpTakeService extends BaseService<ExpTakeOrder> implements Unified
         ExpTakeOrder entity = moreInfo(order);
 
         LinkedHashMap ret = new LinkedHashMap();
-        ret.put("订单总额",entity.getTotalFee()/100.0);
-        ret.put("快递品牌",entity.getExpTakeName());
-        ret.put("取件短信",entity.getSmsText());
-        ret.put("取件姓名",entity.getExpTakeName());
-        ret.put("取件电话",entity.getExpTakePhone());
-        ret.put("配送地址",entity.getSendAddr());
-        ret.put("配送电话",entity.getSendPhone());
-        ret.put("订单备注",entity.getRemark());
+        ret.put("订单总额", entity.getTotalFee() / 100.0);
+        ret.put("快递品牌", entity.getExpTakeName());
+        ret.put("取件短信", entity.getSmsText());
+        ret.put("取件姓名", entity.getExpTakeName());
+        ret.put("取件电话", entity.getExpTakePhone());
+        ret.put("配送地址", entity.getSendAddr());
+        ret.put("配送电话", entity.getSendPhone());
+        ret.put("订单备注", entity.getRemark());
         return ret;
     }
 
@@ -63,6 +64,12 @@ public class ExpTakeService extends BaseService<ExpTakeOrder> implements Unified
         expTakeOrder.setPaid(true);
         expTakeOrder.setStatus(OrderStatusEnum.PAIED.getCode());
         update(expTakeOrder);
+    }
+
+    @Override
+    public String readSimpleInfo(UnifiedOrder order) {
+        ExpTakeOrder takeOrder = moreInfo(order);
+        return takeOrder.getExpTakeName() + "/" + StringUtil.shorten(takeOrder.getSmsText(), 10);
     }
 
     public List<ExpTakeOrder> findByStatusIdDesc(Integer status, Integer page, Integer pageSize) {

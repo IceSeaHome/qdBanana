@@ -18,4 +18,6 @@ public interface UnifiedOrderMethods<T> {
     Map readMap(UnifiedOrder order);
 
     void onPaid(UnifiedOrder order);
+
+    String readSimpleInfo(UnifiedOrder order);
 }

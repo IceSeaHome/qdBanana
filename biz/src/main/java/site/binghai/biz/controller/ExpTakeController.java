@@ -76,6 +76,6 @@ public class ExpTakeController extends BaseController {
         order.setUnifiedId(unifiedOrder.getId());
 
         order = expTakeService.save(order);
-        return success(order, "/user/unified/detail?unifiedId=" + order.getId());
+        return success(order, "/user/unified/detail?unifiedId=" + unifiedOrder.getId());
     }
 }

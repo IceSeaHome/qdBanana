@@ -61,6 +61,12 @@ public class ExpSendService extends BaseService<ExpSendOrder> implements Unified
         update(expSendOrder);
     }
 
+    @Override
+    public String readSimpleInfo(UnifiedOrder order) {
+        ExpSendOrder expSendOrder = moreInfo(order);
+        return expSendOrder.getExpName();
+    }
+
 
     public List<ExpSendOrder> findTimeBetween(Long timeStart, Long timeEnd) {
         return dao.findByCreatedBetween(timeStart, timeEnd);

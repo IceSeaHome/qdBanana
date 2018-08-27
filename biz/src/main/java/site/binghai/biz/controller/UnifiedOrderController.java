@@ -1,7 +1,10 @@
 package site.binghai.biz.controller;
 
+import com.alibaba.fastjson.JSONObject;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import site.binghai.biz.service.ExpSendService;
@@ -13,6 +16,7 @@ import site.binghai.lib.entity.WxUser;
 import site.binghai.lib.enums.OrderStatusEnum;
 import site.binghai.lib.enums.PayBizEnum;
 import site.binghai.lib.service.UnifiedOrderService;
+import site.binghai.lib.utils.StringUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -63,12 +67,46 @@ public class UnifiedOrderController extends BaseController {
     }
 
     @GetMapping("list")
-    @ResponseBody
-    public Object list(@RequestParam Integer page, @RequestParam Integer pageSize) {
+    public String list(ModelMap map) {
+        List orderParts = emptyList();
+        List all = emptyList();
+        List completed = emptyList();
+        List created = emptyList();
         WxUser user = getSessionPersistent(WxUser.class);
-        List<UnifiedOrder> data = unifiedOrderService.findByUserIdOrderByIdDesc(user.getId(), page, pageSize);
-        data.forEach(v -> v.setExtra(moreInfo(v)));
-        return success(data, null);
+        List<UnifiedOrder> data = unifiedOrderService.findByUserIdOrderByIdDesc(user.getId(), 0, 1000);
+        data.forEach(v -> {
+            v.setOrderId(StringUtil.shorten(v.getOrderId(),12) +"...");
+            JSONObject extra = newJSONObject();
+            extra.put("sinfo",readSimpleInfo(v));
+            extra.put("payUrl",buildPayUrl(v));
+            v.setExtra(extra);
+            switch (OrderStatusEnum.valueOf(v.getStatus())) {
+                case COMPLETE:
+                    completed.add(v);
+                    break;
+                case CREATED:
+                    created.add(v);
+                    break;
+            }
+            all.add(v);
+        });
+        orderParts.add(all);
+        orderParts.add(completed);
+        orderParts.add(created);
+
+        map.put("orderParts", orderParts);
+
+        return "orders";
+    }
+
+    private Object readSimpleInfo(UnifiedOrder unifiedOrder) {
+        switch (PayBizEnum.valueOf(unifiedOrder.getAppCode())) {
+            case EXP_SEND:
+                return sendService.readSimpleInfo(unifiedOrder);
+            case EXP_TAKE:
+                return takeService.readSimpleInfo(unifiedOrder);
+        }
+        return null;
     }
 
     @GetMapping("pay")
