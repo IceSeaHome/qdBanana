@@ -49,7 +49,7 @@ public class UnifiedOrderController extends BaseController {
                 + "?title=" + unifiedOrder.getTitle()
                 + "&totalFee=" + unifiedOrder.getShouldPay()
                 + "&orderId=" + unifiedOrder.getOrderId()
-                +"&callBack="+iceConfig.getAppRoot()+"/payNotify";
+                + "&callBack=" + iceConfig.getAppRoot() + "/user/unified/detail?unifiedId=" + unifiedOrder.getId();
     }
 
     private Map readMap(UnifiedOrder unifiedOrder) {

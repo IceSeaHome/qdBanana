@@ -28,7 +28,7 @@ public class ListenerController extends BaseController {
     private ExpTakeService expTakeService;
 
 
-    @GetMapping("payNotify")
+    @RequestMapping("payNotify")
     public Object payNotify(@RequestParam Long totalPay, @RequestParam String orderId, @RequestParam String sign) {
         if (hasEmptyString(totalPay, orderId, sign)) {
             return fail("all parameters is required.");
