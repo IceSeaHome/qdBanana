@@ -1,5 +1,6 @@
 package site.binghai.biz.service;
 
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import site.binghai.lib.entity.UnifiedOrder;
 import site.binghai.lib.enums.OrderStatusEnum;
 import site.binghai.lib.service.BaseService;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,11 +42,23 @@ public class ExpSendService extends BaseService<ExpSendOrder> implements Unified
 
     @Override
     public Map readMap(UnifiedOrder order) {
-        return null;
+        ExpSendOrder expSendOrder = moreInfo(order);
+        Map data = new LinkedHashMap();
+        data.put("订单总额",expSendOrder.getTotalFee()/100.0);
+        data.put("快递名称",expSendOrder.getExpName());
+        data.put("联系姓名",expSendOrder.getFetchName());
+        data.put("联系手机",expSendOrder.getFetchPhone());
+        data.put("取件地址",expSendOrder.getFetchAddr());
+        data.put("订单备注",expSendOrder.getRemark());
+        return data;
     }
 
     @Override
     public void onPaid(UnifiedOrder order) {
+        ExpSendOrder expSendOrder = moreInfo(order);
+        expSendOrder.setStatus(OrderStatusEnum.PAIED.getCode());
+        expSendOrder.setPaid(true);
+        update(expSendOrder);
     }
 
 
