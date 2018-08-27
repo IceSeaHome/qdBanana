@@ -76,7 +76,7 @@
             data:JSON.stringify(dataMap),
             success:function(data){
                 if(data.status == 'SUCCESS'){
-                    alert(true,'下单成功','OJBK');
+                    window.location.href = data.msg;
                 }else{
                     alert(false,'下单失败',data.msg);
                 }

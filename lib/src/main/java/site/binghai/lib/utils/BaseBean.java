@@ -34,20 +34,21 @@ public abstract class BaseBean extends MapUtils {
         return JSONObject.parseObject(JSONObject.toJSONString(obj));
     }
 
-    protected boolean noEmptyString(Collection<String> strs){
+    protected boolean hasEmptyString(Collection<String> strs) {
         for (String str : strs) {
-            if(StringUtils.isEmpty(str))
+            if (StringUtils.isEmpty(str))
                 return false;
         }
         return true;
     }
 
-    protected boolean noEmptyString(String... strs){
-        for (String str : strs) {
-            if(StringUtils.isEmpty(str))
-                return false;
+    protected boolean hasEmptyString(Object... strs) {
+        for (Object str : strs) {
+            if (str == null) return true;
+            if (StringUtils.isEmpty(str.toString()))
+                return true;
         }
-        return true;
+        return false;
     }
 
 }

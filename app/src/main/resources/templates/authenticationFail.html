@@ -1,0 +1,43 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+
+    <title>鉴权失败</title>
+    <link rel="stylesheet" type="text/css" href="/css/base.css">
+    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script src="/js/common.js"></script>
+    <!--banner 脚本-->
+    <script src="/js/TouchSlide.1.1.js"></script>
+    <!--banner 脚本-->
+    <link rel="stylesheet" type="text/css" href="http://cdn.binghai.site/o_1clq1itcp1uf5189g2cg1rhq1g2oa.css">
+    <script src="http://cdn.binghai.site/o_1clq1jn5emrb1d0cg37h4pgkia.js"></script>
+</head>
+
+<body>
+<header class="header" id="header">
+    <a href="javascript:history.go(-1)" target=_self class="back">返回</a>
+    <h1>鉴权失败</h1>
+</header>
+<!--header-end-->
+
+<div class="container" id="container">
+
+    <a class="pay" href="/user/my/index">返回首页</a>
+</div>
+
+<script type="text/javascript" th:inline="javascript">
+    function alert(success, title, msg) {
+        swal(
+            title,
+            msg,
+            success ? 'success' : 'error'
+        )
+    }
+
+    alert(false, "鉴权失败", "您似乎访问了不属于您的资源!");
+</script>
+</body>
+</html>

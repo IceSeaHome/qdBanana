@@ -11,6 +11,7 @@ import site.binghai.lib.enums.OrderStatusEnum;
 import site.binghai.lib.service.BaseService;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ExpSendService extends BaseService<ExpSendOrder> implements UnifiedOrderMethods<ExpSendOrder> {
@@ -36,6 +37,16 @@ public class ExpSendService extends BaseService<ExpSendOrder> implements Unified
         update(expSendOrder);
         return expSendOrder;
     }
+
+    @Override
+    public Map readMap(UnifiedOrder order) {
+        return null;
+    }
+
+    @Override
+    public void onPaid(UnifiedOrder order) {
+    }
+
 
     public List<ExpSendOrder> findTimeBetween(Long timeStart, Long timeEnd) {
         return dao.findByCreatedBetween(timeStart, timeEnd);

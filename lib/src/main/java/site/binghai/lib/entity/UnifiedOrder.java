@@ -2,6 +2,7 @@ package site.binghai.lib.entity;
 
 import lombok.Data;
 import site.binghai.lib.enums.OrderStatusEnum;
+import site.binghai.lib.enums.PayBizEnum;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -62,15 +63,19 @@ public class UnifiedOrder extends BaseEntity {
         return id;
     }
 
-    public OrderStatusEnum orderState(){
+    public OrderStatusEnum orderState() {
         return OrderStatusEnum.valueOf(status);
     }
 
-    public double originalDoublePrice(){
-        return originalPrice/100.0;
+    public PayBizEnum orderBiz() {
+        return PayBizEnum.valueOf(appCode);
     }
 
-    public double shouldPayDouble(){
-        return shouldPay/100.0;
+    public double originalDoublePrice() {
+        return originalPrice / 100.0;
+    }
+
+    public double shouldPayDouble() {
+        return shouldPay / 100.0;
     }
 }

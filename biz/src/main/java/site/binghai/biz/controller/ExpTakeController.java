@@ -16,10 +16,7 @@ import site.binghai.lib.enums.OrderStatusEnum;
 import site.binghai.lib.enums.PayBizEnum;
 import site.binghai.lib.service.UnifiedOrderService;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * 取件业务逻辑
@@ -37,11 +34,11 @@ public class ExpTakeController extends BaseController {
 
     @GetMapping("prepare")
     public String prepare(ModelMap map) {
-        JSONObject expList=  newJSONObject();
+        JSONObject expList = newJSONObject();
         expBrandService.findAll(999)
                 .stream()
                 .filter(v -> v.getEnableTake())
-                .forEach(v-> expList.put(v.getId().toString(),v.getExpName()));
+                .forEach(v -> expList.put(v.getId().toString(), v.getExpName()));
 
         map.put("wxUser", getSessionPersistent(WxUser.class));
         map.put("expList", expList);
@@ -53,7 +50,8 @@ public class ExpTakeController extends BaseController {
     public Object create(@RequestBody Map map) {
         ExpTakeOrder order = expTakeService.newInstance(map);
         Long expId = order.getExpId();
-        if(expId == null) return fail("快递必选哦");
+        if (expId == null) return fail("快递必选哦");
+        if (hasEmptyString(getString(map, "smsText"))) return fail("取件码必填哦");
         ExpBrand expBrand = expBrandService.findById(expId);
         order.setExpName(expBrand.getExpName());
 
@@ -78,6 +76,6 @@ public class ExpTakeController extends BaseController {
         order.setUnifiedId(unifiedOrder.getId());
 
         order = expTakeService.save(order);
-        return success(order, null);
+        return success(order, "/user/unified/detail?unifiedId=" + order.getId());
     }
 }

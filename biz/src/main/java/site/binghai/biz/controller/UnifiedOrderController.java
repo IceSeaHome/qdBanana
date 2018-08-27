@@ -1,10 +1,9 @@
 package site.binghai.biz.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
 import site.binghai.biz.service.ExpSendService;
 import site.binghai.biz.service.ExpTakeService;
 import site.binghai.lib.config.IceConfig;
@@ -16,8 +15,9 @@ import site.binghai.lib.enums.PayBizEnum;
 import site.binghai.lib.service.UnifiedOrderService;
 
 import java.util.List;
+import java.util.Map;
 
-@RestController
+@Controller
 @RequestMapping("/user/unified/")
 public class UnifiedOrderController extends BaseController {
 
@@ -30,7 +30,40 @@ public class UnifiedOrderController extends BaseController {
     @Autowired
     private IceConfig iceConfig;
 
+    @GetMapping("detail")
+    public String detail(@RequestParam Long unifiedId, ModelMap map) {
+        WxUser wxUser = getSessionPersistent(WxUser.class);
+        UnifiedOrder order = unifiedOrderService.findById(unifiedId);
+        if (order == null || !order.getUserId().equals(wxUser.getId())) {
+            return "authenticationFail";
+        }
+
+        order.setExtra(readMap(order));
+        map.put("order", order);
+        map.put("payUrl", buildPayUrl(order));
+        return "detail";
+    }
+
+    private String buildPayUrl(UnifiedOrder unifiedOrder) {
+        return iceConfig.getWxPayUrl()
+                + "?title=" + unifiedOrder.getTitle()
+                + "&totalFee=" + unifiedOrder.getShouldPay()
+                + "&orderId=" + unifiedOrder.getOrderId()
+                +"&callBack="+iceConfig.getAppRoot()+"/payNotify";
+    }
+
+    private Map readMap(UnifiedOrder unifiedOrder) {
+        switch (PayBizEnum.valueOf(unifiedOrder.getAppCode())) {
+            case EXP_SEND:
+                return sendService.readMap(unifiedOrder);
+            case EXP_TAKE:
+                return takeService.readMap(unifiedOrder);
+        }
+        return null;
+    }
+
     @GetMapping("list")
+    @ResponseBody
     public Object list(@RequestParam Integer page, @RequestParam Integer pageSize) {
         WxUser user = getSessionPersistent(WxUser.class);
         List<UnifiedOrder> data = unifiedOrderService.findByUserIdOrderByIdDesc(user.getId(), page, pageSize);
@@ -39,6 +72,7 @@ public class UnifiedOrderController extends BaseController {
     }
 
     @GetMapping("pay")
+    @ResponseBody
     public Object pay(@RequestParam Long unifiedId) {
         return "redirect:" + iceConfig.getWxPayUrl() + "?unifiedId=" + unifiedId;
     }
@@ -54,6 +88,7 @@ public class UnifiedOrderController extends BaseController {
     }
 
     @GetMapping("cancel")
+    @ResponseBody
     public Object cancel(@RequestParam Long unifiedId) {
         UnifiedOrder unifiedOrder = unifiedOrderService.findById(unifiedId);
         WxUser wxUser = getSessionPersistent(WxUser.class);

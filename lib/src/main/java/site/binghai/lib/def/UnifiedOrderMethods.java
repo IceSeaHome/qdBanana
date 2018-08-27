@@ -2,6 +2,7 @@ package site.binghai.lib.def;
 
 
 import site.binghai.lib.entity.UnifiedOrder;
+import java.util.Map;
 
 /**
  * Created by IceSea on 2018/4/17.
@@ -11,4 +12,10 @@ import site.binghai.lib.entity.UnifiedOrder;
 public interface UnifiedOrderMethods<T> {
     T moreInfo(UnifiedOrder order);
     T cancel(UnifiedOrder order);
+    /**
+     * 转换成用户可读的k，v结构
+     * */
+    Map readMap(UnifiedOrder order);
+
+    void onPaid(UnifiedOrder order);
 }

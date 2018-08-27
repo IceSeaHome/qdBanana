@@ -1,0 +1,64 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+
+  <title>订单详情</title>
+  <link rel="stylesheet" type="text/css" href="/css/base.css">
+  <link rel="stylesheet" type="text/css" href="/css/common.css">
+  <script type="text/javascript" src="/js/jquery.min.js"></script>
+  <script src="/js/common.js"></script>
+  <!--banner 脚本-->
+  <script src="/js/TouchSlide.1.1.js"></script>
+  <!--banner 脚本-->
+  <link rel="stylesheet" type="text/css" href="http://cdn.binghai.site/o_1clq1itcp1uf5189g2cg1rhq1g2oa.css">
+  <script src="http://cdn.binghai.site/o_1clq1jn5emrb1d0cg37h4pgkia.js"></script>
+</head>
+
+<body>
+<header class="header" id="header">
+  <a href="javascript:history.go(-1)" target=_self class="back">返回</a>
+  <h1>订单详情</h1>
+</header>
+<!--header-end-->
+
+<div class="container" id="container">
+
+  <div class="order-confirm">
+    <div class="order-num">
+      <span class="fl">订单号：<em th:text="${order.orderId}">88888888</em></span>
+    </div>
+      <ul class="order-confirm-list clearfix order-cancel-list">
+        <li><h2>订单状态</h2><span th:text="${order.orderState().name}">等待支付</span></li>
+        <li><h2>订单业务</h2><span th:text="${order.orderBiz().name}">订单业务</span></li>
+        <li><h2>订单名称</h2><span th:text="${order.title}">订单业务</span></li>
+        <li th:each="item:${order.extra}"><h2 th:text="${item.key}">订单总价</h2><span th:text="${item.value}">订单业务</span></li>
+        <li><h2>其他备注</h2><span th:text="${order.remark}">订单业务</span></li>
+        <li><h2>订单原价</h2><span th:text="${order.originalPrice/100.0}">订单业务</span></li>
+
+        <li><p>实付款：<em th:text="${'￥'+order.shouldPay/100.0}">￥100.00</em></p></li>
+      </ul>
+      <a class="pay" th:if="${order.status < 2}" th:href="${payUrl}">立即支付</a>
+      <span class="cancel" th:if="${order.status < 4}" onclick="onNotSupport()">取消订单</span>
+    </div>
+    <!--order-confirm-end-->
+
+  </div>
+  <!--container-end-->
+</body>
+
+<script>
+  function onNotSupport() {
+      alert(false,"开发中","不好意思，暂时不支持退款哦");
+  }
+
+  function alert(success, title, msg) {
+      swal(
+          title,
+          msg,
+          success ? 'success' : 'error'
+      )
+  }
+</script>
+</html>
