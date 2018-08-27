@@ -41,6 +41,6 @@ public class WxController extends BaseController {
 
         backUrl = getStringFromSession(SessionDataBundle.BACK_URL);
         //todo
-        return backUrl == null ? "用户主页" : backUrl;
+        return backUrl == null ? "/" : backUrl;
     }
 }

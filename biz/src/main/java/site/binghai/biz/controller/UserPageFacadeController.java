@@ -13,13 +13,13 @@ import site.binghai.lib.service.ImageService;
 import java.util.List;
 
 @Controller
-@RequestMapping("/user/my/")
+@RequestMapping("/")
 public class UserPageFacadeController extends BaseController {
 
     @Autowired
     private ImageService imageService;
 
-    @RequestMapping("index")
+    @RequestMapping(value = {"/", "index"})
     public String listRollingImage(ModelMap map) {
         List<Image> imageList = imageService.listRollingImage();
         map.put("imgs", imageList);

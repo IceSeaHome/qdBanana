@@ -1,6 +1,8 @@
 package site.binghai.biz.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import site.binghai.biz.service.WxUserService;
 import site.binghai.lib.controller.BaseController;
@@ -8,12 +10,16 @@ import site.binghai.lib.entity.WxUser;
 
 import java.util.Map;
 
-@RestController
+@Controller
 @RequestMapping("/user/my/")
 public class UserController extends BaseController {
     @Autowired
     private WxUserService wxUserService;
 
+    @GetMapping("index")
+    public String index(ModelMap map){
+        return "userIndex";
+    }
     @GetMapping("myInfo")
     public Object myInfo() {
         WxUser wxUser = getSessionPersistent(WxUser.class);
