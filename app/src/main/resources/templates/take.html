@@ -78,7 +78,7 @@
                 if(data.status == 'SUCCESS'){
                     window.location.href = data.msg;
                 }else{
-                    alert(false,'下单失败',data.msg);
+                    myNotice(false,'下单失败',data.msg);
                 }
             }
         });
@@ -149,7 +149,7 @@
         })
     }
     
-    function alert(success, title, msg) {
+    function myNotice(success, title, msg) {
         swal(
             title,
             msg,
