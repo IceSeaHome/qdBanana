@@ -76,6 +76,6 @@ public class ExpSendController extends BaseController {
         order.setUnifiedId(unifiedOrder.getId());
 
         order = expSendService.save(order);
-        return success(order, "/user/unified/detail?unifiedId=" + order.getId());
+        return success(order, "/user/unified/detail?unifiedId=" + unifiedOrder.getId());
     }
 }
