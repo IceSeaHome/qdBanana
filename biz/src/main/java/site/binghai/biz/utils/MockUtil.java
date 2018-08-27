@@ -11,7 +11,7 @@ public class MockUtil {
         wxUser.setPhone("18866668888");
         wxUser.setUserName("测试Mock");
         wxUser.setOpenId("FFFF-FFFF-FFFF-FFFF");
-        wxUser.setUsuallyAddress("FUCKU");
+        wxUser.setUsuallyAddress("测试地址");
         wxUser.setRefereeId(-1L);
         return wxUser;
     }
