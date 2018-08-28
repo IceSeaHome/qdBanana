@@ -44,12 +44,15 @@ public class ExpSendService extends BaseService<ExpSendOrder> implements Unified
     public Map readMap(UnifiedOrder order) {
         ExpSendOrder expSendOrder = moreInfo(order);
         Map data = new LinkedHashMap();
-        data.put("订单总额",expSendOrder.getTotalFee()/100.0);
+        if(!hasEmptyString(expSendOrder.getExpNo())){
+            data.put("快递单号",expSendOrder.getExpNo());
+        }
         data.put("快递名称",expSendOrder.getExpName());
         data.put("联系姓名",expSendOrder.getFetchName());
         data.put("联系手机",expSendOrder.getFetchPhone());
         data.put("取件地址",expSendOrder.getFetchAddr());
         data.put("订单备注",expSendOrder.getRemark());
+        data.put("订单总额",expSendOrder.getTotalFee()/100.0);
         return data;
     }
 

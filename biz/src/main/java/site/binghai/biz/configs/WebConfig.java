@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import site.binghai.biz.filters.ManageFilter;
 import site.binghai.biz.filters.WxInfoCompeteFilter;
 import site.binghai.biz.filters.WxLoginFilter;
 
@@ -14,11 +15,17 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/manage/index").setViewName("manage");
+        registry.addViewController("/mloginPage").setViewName("manage");
     }
 
     @Bean
     public WxLoginFilter wxLoginFilter() {
         return new WxLoginFilter();
+    }
+
+    @Bean
+    public ManageFilter manageFilter() {
+        return new ManageFilter();
     }
 
     @Bean
@@ -29,6 +36,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(manageFilter()).addPathPatterns("/manage/**");
         registry.addInterceptor(wxLoginFilter()).addPathPatterns("/user/**");
         registry.addInterceptor(wxInfoCompeteFilter()).addPathPatterns("/user/**");
     }
