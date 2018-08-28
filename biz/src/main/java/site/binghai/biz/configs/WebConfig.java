@@ -13,12 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/user/my/expTake").setViewName("expTake");
-        registry.addViewController("/user/my/expSend").setViewName("expTake");
-        registry.addViewController("/user/my/orders").setViewName("orders");
-        registry.addViewController("/user/my/myCenter").setViewName("myCenter");
-        registry.addViewController("/user/my/modifyMyInfo").setViewName("myCenter");
-        registry.addViewController("/user/my/orderDetail").setViewName("orderDetail");
+        registry.addViewController("/manage/index").setViewName("manage");
     }
 
     @Bean

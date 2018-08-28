@@ -7,7 +7,7 @@ public class CompareUtils {
         for (T element : elements) {
             if (element.equals(source)) in = true;
         }
-        return false;
+        return in;
     }
 
     public static <T> boolean notInAny(T source, T... elements) {

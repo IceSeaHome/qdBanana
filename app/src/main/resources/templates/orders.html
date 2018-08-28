@@ -52,8 +52,8 @@
                     </div>
                     <div class="my-order-item-btn">
                         <div class="pos-r">
-                            <span class="my-order-item-red" th:if="${order.status < 4}">
-                                <a href="javascript:onNotSupport()">取消订单</a> </span>
+                            <!--<span class="my-order-item-red" th:if="${order.status < 4}">-->
+                                <!--<a href="javascript:onNotSupport()">取消订单</a> </span>-->
                             <span class="my-order-item-red" th:if="${order.status < 2}">
                                 <a th:href="${order.extra.payUrl}">立即支付</a></span>
                         </div>

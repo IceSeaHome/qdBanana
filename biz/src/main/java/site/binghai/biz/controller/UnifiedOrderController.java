@@ -204,7 +204,6 @@ public class UnifiedOrderController extends BaseController {
      * 退款
      */
     private boolean refund(UnifiedOrder unifiedOrder) {
-        //TODO 退款成功通知
-        return false;
+        return unifiedOrderService.cancel(unifiedOrder.getId());
     }
 }

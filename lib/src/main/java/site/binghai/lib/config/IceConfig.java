@@ -18,6 +18,7 @@ public class IceConfig {
     private String wxAuthenticationUrl;
     private String wxValidateMD5Key;
     private String wxPayUrl;
+    private String wxRefundUrl;
     private String defaultAvatarUrl;
 
 

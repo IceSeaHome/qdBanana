@@ -4,12 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
+import site.binghai.lib.config.IceConfig;
 import site.binghai.lib.entity.UnifiedOrder;
 import site.binghai.lib.entity.WxUser;
 import site.binghai.lib.enums.OrderStatusEnum;
 import site.binghai.lib.enums.PayBizEnum;
 import site.binghai.lib.service.dao.UnifiedOrderDao;
 import site.binghai.lib.utils.CompareUtils;
+import site.binghai.lib.utils.HttpUtils;
+import site.binghai.lib.utils.MD5;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -22,6 +25,8 @@ import java.util.List;
 public class UnifiedOrderService extends BaseService<UnifiedOrder> {
     @Autowired
     private UnifiedOrderDao dao;
+    @Autowired
+    private IceConfig iceConfig;
 
     @Override
     protected JpaRepository<UnifiedOrder, Long> getDao() {
@@ -111,8 +116,20 @@ public class UnifiedOrderService extends BaseService<UnifiedOrder> {
         boolean execute = true;
         if (CompareUtils.inAny(OrderStatusEnum.valueOf(order.getStatus()),
                 OrderStatusEnum.COMPLETE, OrderStatusEnum.PAIED)) {
-            //TODO refund
-            //if error ,execute = false;
+
+            String tradeNo = order.getOrderId();
+            String totalFee = order.getShouldPay().toString();
+            String sign = MD5.encryption(tradeNo + iceConfig.getWxValidateMD5Key() + totalFee);
+
+            String urlParams = "out_trade_no=" + tradeNo + "&refund_fee=" + totalFee + "&validate=" + sign;
+            String ret = HttpUtils.sendGet(iceConfig.getWxRefundUrl(), urlParams);
+
+            logger.warn("Refund url:{}", iceConfig.getWxRefundUrl() + "?" + urlParams);
+            logger.warn("Refund Result:{}",ret);
+
+            if(!ret.contains("SUCCESS")){
+                execute = false;
+            }
         }
 
         if (execute) {
