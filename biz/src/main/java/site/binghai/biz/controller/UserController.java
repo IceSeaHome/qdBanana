@@ -17,25 +17,36 @@ public class UserController extends BaseController {
     private WxUserService wxUserService;
 
     @GetMapping("index")
-    public String index(ModelMap map){
+    public String index(ModelMap map) {
+        map.put("user", getSessionPersistent(WxUser.class));
         return "userIndex";
     }
+
     @GetMapping("myInfo")
-    public Object myInfo() {
+    public String myInfo(ModelMap map) {
         WxUser wxUser = getSessionPersistent(WxUser.class);
-        return success(wxUser, null);
+        map.put("user", wxUser);
+        return "myInfo";
     }
 
     @PostMapping("update")
+    @ResponseBody
     public Object update(@RequestBody Map map) {
-        WxUser wxUser = getSessionPersistent(WxUser.class);
-        try {
-            wxUser = wxUserService.updateAndSave(wxUser, map);
-            persistent(wxUser);
-        } catch (Exception e) {
-            logger.error("user update his info error", e);
-            return fail(e.getMessage());
+        WxUser user = getSessionPersistent(WxUser.class);
+        String userName = getString(map, "userName");
+        String phone = getString(map, "phone");
+        String usuallyAddress = getString(map, "usuallyAddress");
+
+        if (hasEmptyString(userName, phone, usuallyAddress)) {
+            return fail("所有信息都是必填哦");
         }
-        return success(wxUser, null);
+
+        user.setUserName(userName);
+        user.setPhone(phone);
+        user.setUsuallyAddress(usuallyAddress);
+
+        wxUserService.update(user);
+
+        return success(null, "index");
     }
 }

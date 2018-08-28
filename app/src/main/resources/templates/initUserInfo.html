@@ -1,0 +1,123 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+          name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <meta content="telephone=no" name="format-detection"/>
+    <title>个人资料</title>
+    <link rel="stylesheet" type="text/css" href="/css/base.css">
+    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script src="/js/common.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://cdn.binghai.site/o_1clq1itcp1uf5189g2cg1rhq1g2oa.css">
+    <script src="http://cdn.binghai.site/o_1clq1jn5emrb1d0cg37h4pgkia.js"></script>
+</head>
+
+<body>
+<header class="header" id="header">
+    <a href="javascript:history.go(-1)" target=_self class="back">返回</a>
+    <h1>个人资料</h1>
+</header>
+<!--header-end-->
+
+<div class="container" id="container">
+
+    <div class="personal-data1">
+        <ul>
+            <li><a href="javascript:inputIntoMap('userName')">
+                <!--<span>姓名</span><em id="userName" th:text="${user.userName?user.userName}">点我修改</em>-->
+                <span>姓名</span><em id="userName" >点我修改</em>
+            </a></li>
+            <li><a href="javascript:inputIntoMap('phone')">
+                <!--<span>手机号</span><em id="phone" th:text="${user.phone?user.phone}">点我修改</em>-->
+                <span>手机号</span><em id="phone" >点我修改</em>
+            </a></li>
+            <li><a href="javascript:inputIntoMap('usuallyAddress')">
+                <!--<span>宿舍信息</span><em id="usuallyAddress" th:text="${user.usuallyAddress}">点我修改</em>-->
+                <span>宿舍信息</span><em id="usuallyAddress" >点我修改</em>
+            </a></li>
+        </ul>
+    </div>
+    <a class="pay" href="javascript:submit()">立即更新</a>
+</div>
+
+
+<script type="text/javascript" th:inline="javascript">
+    function submit() {
+        $.ajax({
+            type: "POST",
+            url: '/wx/updateInitUserInfo',
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(dataMap),
+            success: function (data) {
+                if (data.status == 'SUCCESS') {
+                    window.location.href = data.msg;
+                } else {
+                    myNotice(false, '更新失败', data.msg);
+                }
+            }
+        });
+    }
+
+    function getTitle(fid) {
+        switch (fid) {
+            case 'userName':
+                return "姓名";
+            case 'phone':
+                return "手机号";
+            case 'usuallyAddress':
+                return "宿舍地址";
+        }
+        return "请输入";
+    }
+
+    var dataMap = {
+        userName: [[${user.userName}]],
+        phone: [[${user.phone}]],
+        usuallyAddress: [[${user.usuallyAddress}]],
+    };
+
+    var expMap = [[${expList}]];
+
+    function inputIntoMap(fid) {
+        swal({
+            title: getTitle(fid),
+            input: 'text',
+            showCancelButton: true,
+            inputValidator: function (value) {
+                return new Promise(function (resolve, reject) {
+                    if (value) {
+                        resolve()
+                    } else {
+                        reject('这是个必填项哦')
+                    }
+                })
+            }
+        }).then(function (result) {
+            $("#" + fid).text(result)
+            dataMap[fid] = result;
+            console.log(dataMap);
+        })
+    }
+
+
+    function myNotice(success, title, msg) {
+        swal(
+            title,
+            msg,
+            success ? 'success' : 'error'
+        )
+    }
+
+    swal(
+        "请先更新信息",
+        "为了更好的服务，请先更新您的信息",
+        "info"
+    )
+</script>
+</body>
+</html>

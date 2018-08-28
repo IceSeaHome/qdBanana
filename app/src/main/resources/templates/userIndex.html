@@ -1,0 +1,63 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+
+    <title>我的信息</title>
+    <link rel="stylesheet" type="text/css" href="/css/base.css">
+    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script src="/js/common.js"></script>
+    <!--banner 脚本-->
+    <script src="/js/TouchSlide.1.1.js"></script>
+    <!--banner 脚本-->
+    <link rel="stylesheet" type="text/css" href="http://cdn.binghai.site/o_1clq1itcp1uf5189g2cg1rhq1g2oa.css">
+    <script src="http://cdn.binghai.site/o_1clq1jn5emrb1d0cg37h4pgkia.js"></script>
+</head>
+
+<body>
+<header class="header" id="header">
+<a href="javascript:history.go(-1)" target=_self class="back">返回</a>
+<h1>帮拿拿</h1>
+</header>
+<!--header-end-->
+
+<div class="container" id="container"> 
+<div class="my-face">
+  <div class="my-face-con">
+    <div class="my-face-pic"><img th:src="${user.avatar}"></div>
+    <p th:text="${user.userName}">18050000000</p>
+  </div>
+</div>
+
+<div class="personal-list">
+     <ul>
+       <li><a class="my-icon-wddd" href="/user/unified/list">我的订单</a></li>
+     </ul>
+      <ul>
+       <li><a class="my-icon-grzl" href="/user/my/myInfo">个人资料</a></li>
+       <!--<li><a class="my-icon-yhq" href="coupons.html">优惠券</a></li>-->
+       <!--<li><a class="my-icon-wdjf" href="integral.html">我的积分</a></li>-->
+     </ul>
+      <ul>
+       <li><a class="my-icon-kfzx" href="#">客服咨询<span class="my-tel">400-000-0000</span></a></li>
+     </ul>
+  </div>
+
+
+</div>
+<!--container-end-->
+
+<!--footer-->
+<footer class="footer" id="footer">
+  <ul class="footnav box-flex">
+    <li><a href="/" class="home"><i></i><span class="full-block">首页</span></a></li>
+    <li><a href="/user/unified/list" class="foot-order"><i></i><span class="full-block">订单</span></a></li>
+    <li class="on"><a href="/user/my/index" class="my"><i></i><span class="full-block">我的</span></a></li>
+  </ul>
+</footer>
+<!--footer-end-->
+
+</body>
+</html>
