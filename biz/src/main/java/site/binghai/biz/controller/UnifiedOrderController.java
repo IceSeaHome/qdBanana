@@ -1,12 +1,13 @@
 package site.binghai.biz.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import site.binghai.biz.entity.ExpBrand;
+import site.binghai.biz.entity.ExpSendOrder;
+import site.binghai.biz.service.ExpBrandService;
 import site.binghai.biz.service.ExpSendService;
 import site.binghai.biz.service.ExpTakeService;
 import site.binghai.lib.config.IceConfig;
@@ -32,6 +33,8 @@ public class UnifiedOrderController extends BaseController {
     @Autowired
     private ExpSendService sendService;
     @Autowired
+    private ExpBrandService expBrandService;
+    @Autowired
     private IceConfig iceConfig;
 
     @GetMapping("detail")
@@ -49,11 +52,16 @@ public class UnifiedOrderController extends BaseController {
     }
 
     private String buildPayUrl(UnifiedOrder unifiedOrder) {
-        return iceConfig.getWxPayUrl()
+        String url = iceConfig.getWxPayUrl()
                 + "?title=" + unifiedOrder.getTitle()
                 + "&totalFee=" + unifiedOrder.getShouldPay()
-                + "&orderId=" + unifiedOrder.getOrderId()
-                + "&callBack=" + iceConfig.getAppRoot() + "/user/unified/detail?unifiedId=" + unifiedOrder.getId();
+                + "&orderId=" + unifiedOrder.getOrderId();
+        if (unifiedOrder.getAppCode().equals(PayBizEnum.EXP_SEND.getCode())) {
+            ExpSendOrder expSendOrder = sendService.moreInfo(unifiedOrder);
+            ExpBrand expBrand = expBrandService.findById(expSendOrder.getExpId());
+            return url + "&callBack=" + expBrand.getServiceUrl();
+        }
+        return url + "&callBack=" + iceConfig.getAppRoot() + "/user/unified/detail?unifiedId=" + unifiedOrder.getId();
     }
 
     private Map readMap(UnifiedOrder unifiedOrder) {
@@ -75,10 +83,10 @@ public class UnifiedOrderController extends BaseController {
         WxUser user = getSessionPersistent(WxUser.class);
         List<UnifiedOrder> data = unifiedOrderService.findByUserIdOrderByIdDesc(user.getId(), 0, 1000);
         data.forEach(v -> {
-            v.setOrderId(StringUtil.shorten(v.getOrderId(),12) +"...");
+            v.setOrderId(StringUtil.shorten(v.getOrderId(), 12) + "...");
             JSONObject extra = newJSONObject();
-            extra.put("sinfo",readSimpleInfo(v));
-            extra.put("payUrl",buildPayUrl(v));
+            extra.put("sinfo", readSimpleInfo(v));
+            extra.put("payUrl", buildPayUrl(v));
             v.setExtra(extra);
             switch (OrderStatusEnum.valueOf(v.getStatus())) {
                 case COMPLETE:
