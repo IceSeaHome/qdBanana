@@ -16,7 +16,6 @@ public class WebConfig implements WebMvcConfigurer {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/manage/index").setViewName("manage");
         registry.addViewController("/mloginPage").setViewName("manage");
-        registry.addViewController("/expTakeHelp").setViewName("expTakeHelp");
     }
 
     @Bean
