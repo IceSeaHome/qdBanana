@@ -1,0 +1,58 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    <title>服务说明</title>
+    <link rel="stylesheet" href="http://image.binghai.site/data/f_94118274.css"/>
+    <link rel="stylesheet" href="http://image.binghai.site/data/f_75523525.css"/>
+
+    <script src='http://libs.baidu.com/jquery/1.10.2/jquery.min.js'></script>
+    <script src='http://image.binghai.site/data/f_45694192.js'></script>
+    <link href="http://image.binghai.site/data/f_15332504.css" type="text/css">
+
+    <script type="text/javascript">
+        function closeit(){
+            WeixinJSBridge.invoke('closeWindow',{},function(res){
+                //alert(res.err_msg);
+            });
+        }
+    </script>
+</head>
+<body>
+<br>
+<h1 class="page_title">服务说明</h1>
+<div class="weui_dialog_confirm" id="confirmQuery" style="display: none;">
+    <div class="weui_mask"></div>
+    <div class="weui_dialog">
+        <div class="weui_dialog_hd"><strong class="weui_dialog_title">快递规格</strong></div>
+        <div class="weui_dialog_bd" style="color: red">大件快递请走大件物流哦</div>
+        <div class="weui_dialog_ft">
+            <a href="/user/help_express.do" class="weui_btn_dialog default">普通快递</a>
+            <a href="/user/help_express.do?luggage=1" class="weui_btn_dialog primary">大件快递</a>
+        </div>
+    </div>
+</div>
+<div class="weui_msg">
+
+    <div class="weui_text_area" align="left">
+        <p class="weui_msg_desc">* <span style="color: red;">上午代取快递请在十二点十分之前下单</span></p>
+        <p class="weui_msg_desc">* <span style="color: red;">上午系统主要代取西校快递</span></p>
+        <p class="weui_msg_desc">* <span style="color: red;">下午代取快递请在三点之前下单</span></p>
+        <p class="weui_msg_desc">* 每天配送时间为四点到六点</p>
+        <p class="weui_msg_desc">* 。如有意外（天气原因）配送会有延迟</p>
+        <p class="weui_msg_desc">* 周日快递小哥休息，可以正常下单，周一统一配送。</p>
+        <p class="weui_msg_desc">* 当天下单的快递当天指定送到。</p>
+    </div>
+    <div class="weui_opr_area">
+        <p class="weui_btn_area">
+            <a href=/user/expTake/prepare" class="weui_btn weui_btn_primary">我已阅读并同意</a>
+            <a href="javascirpt:void(0)" onclick="closeit()" class="weui_btn weui_btn_warn">我再想想</a>
+        </p>
+    </div>
+</div>
+<script>
+    function confirm_it() {
+        $("#confirmQuery").fadeIn(200);
+    }
+</script>
+</body>
+</html>
