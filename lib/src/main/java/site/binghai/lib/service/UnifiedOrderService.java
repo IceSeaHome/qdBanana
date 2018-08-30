@@ -113,8 +113,8 @@ public class UnifiedOrderService extends BaseService<UnifiedOrder> {
         if (order == null) return false;
         if (order.getStatus().equals(OrderStatusEnum.CANCELED.getCode())) return false;
 
-        boolean execute = true;
-        if (CompareUtils.inAny(OrderStatusEnum.valueOf(order.getStatus()),
+        boolean execute = false;
+        if (CompareUtils.inAny(OrderStatusEnum.valueOf(order.getStatus()), OrderStatusEnum.PROCESSING,
                 OrderStatusEnum.COMPLETE, OrderStatusEnum.PAIED)) {
 
             String tradeNo = order.getOrderId();
@@ -125,10 +125,10 @@ public class UnifiedOrderService extends BaseService<UnifiedOrder> {
             String ret = HttpUtils.sendGet(iceConfig.getWxRefundUrl(), urlParams);
 
             logger.warn("Refund url:{}", iceConfig.getWxRefundUrl() + "?" + urlParams);
-            logger.warn("Refund Result:{}",ret);
+            logger.warn("Refund Result:{}", ret);
 
-            if(!ret.contains("SUCCESS")){
-                execute = false;
+            if (ret.contains("SUCCESS")) {
+                execute = true;
             }
         }
 
