@@ -75,7 +75,7 @@ public class ApiController extends BaseController {
         Map<String, ApiToken> tokenMap = new HashMap<>();
 
         long count = apiTokenService.findAll(999)
-                .stream().filter(v -> tokenString.equals(v))
+                .stream().filter(v -> tokenString.equals(v.getToken()))
                 .peek(v -> tokenMap.put(v.getToken(), v))
                 .count();
 
