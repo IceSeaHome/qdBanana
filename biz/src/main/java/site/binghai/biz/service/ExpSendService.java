@@ -44,6 +44,7 @@ public class ExpSendService extends BaseService<ExpSendOrder> implements Unified
     public Map readMap(UnifiedOrder order) {
         ExpSendOrder expSendOrder = moreInfo(order);
         Map data = new LinkedHashMap();
+        data.put("下单时间", expSendOrder.getCreatedTime());
         if(!hasEmptyString(expSendOrder.getExpNo())){
             data.put("快递单号",expSendOrder.getExpNo());
         }

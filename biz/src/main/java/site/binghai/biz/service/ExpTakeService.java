@@ -47,6 +47,7 @@ public class ExpTakeService extends BaseService<ExpTakeOrder> implements Unified
         ExpTakeOrder entity = moreInfo(order);
 
         LinkedHashMap ret = new LinkedHashMap();
+        ret.put("下单时间", entity.getCreatedTime());
         ret.put("订单总额", entity.getTotalFee() / 100.0);
         ret.put("快递品牌", entity.getExpTakeName());
         ret.put("取件短信", entity.getSmsText());
