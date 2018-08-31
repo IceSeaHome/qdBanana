@@ -52,6 +52,7 @@ public class ExpSendManageController extends BaseController {
             obj.put("statusName", OrderStatusEnum.valueOf(l.getStatus()).getName());
             JSONObject infos = new JSONObject();
 
+            infos.put("下单时间", l.getCreatedTime());
             infos.put("流水序号",l.getId());
             infos.put("用户序号",l.getUserId());
             infos.put("取件手机",l.getFetchPhone());
