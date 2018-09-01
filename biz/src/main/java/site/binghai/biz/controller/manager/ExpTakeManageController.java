@@ -54,7 +54,7 @@ public class ExpTakeManageController extends BaseController {
             infos.put("下单时间", l.getCreatedTime());
             infos.put("流水序号", l.getExpId());
             infos.put("取件姓名", l.getExpTakeName());
-            infos.put("用户序号", l.getUserId());
+//            infos.put("用户序号", l.getUserId());
             infos.put("取件手机", l.getExpTakePhone());
             infos.put("配送手机", l.getSendPhone());
             infos.put("配送地址", l.getSendAddr());

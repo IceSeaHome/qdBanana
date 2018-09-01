@@ -54,7 +54,7 @@ public class ExpSendManageController extends BaseController {
 
             infos.put("下单时间", l.getCreatedTime());
             infos.put("流水序号",l.getId());
-            infos.put("用户序号",l.getUserId());
+//            infos.put("用户序号",l.getUserId());
             infos.put("取件手机",l.getFetchPhone());
             infos.put("取件姓名",l.getFetchName());
             infos.put("取件地址",l.getFetchAddr());
