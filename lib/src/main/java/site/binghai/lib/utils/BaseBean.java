@@ -2,6 +2,7 @@ package site.binghai.lib.utils;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -32,6 +33,20 @@ public abstract class BaseBean extends MapUtils {
 
     protected JSONObject toJsonObject(Object obj) {
         return JSONObject.parseObject(JSONObject.toJSONString(obj));
+    }
+
+    protected boolean isEmptyList(List list) {
+        return CollectionUtils.isEmpty(list);
+    }
+
+    public <T> T safeGet(List<T> list, int index) {
+        if (isEmptyList(list)) return null;
+        if (list.size() < index) return null;
+        return list.get(index);
+    }
+
+    public long now() {
+        return TimeTools.currentTS();
     }
 
     protected boolean hasEmptyString(Collection<String> strs) {
