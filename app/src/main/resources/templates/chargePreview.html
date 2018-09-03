@@ -30,7 +30,7 @@
         <!--内容-->
         <div id="menu_con">
             <section th:each="part:${orderParts}" class="tag">
-                <div class="my-order-item" th:each="order:${part}" th:onclick="${'detailed('+order.id+')'}">
+                <div class="my-order-item" th:each="order:${part}" th:onclick="${'detailed('+order.extra.expOrderId+')'}">
                     <div class="my-order-item-tit clearfix">
                         <h3 th:text="${'订单号：'+ order.orderId+'【'+order.orderBiz().name+'】'}">订单号：888888888</h3>
                         <span class="my-order-wait-zf" th:text="${order.orderState().name}">等待支付</span>

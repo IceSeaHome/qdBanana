@@ -48,6 +48,7 @@ public class ExpChargeController extends BaseController {
                     .collect(Collectors.toList());
             data.forEach(v -> {
                 JSONObject extra = newJSONObject();
+                extra.put("expOrderId", expSendService.moreInfo(v).getId());
                 extra.put("sinfo", expSendService.readSimpleInfo(v));
                 extra.put("payUrl", unifiedOrderController.buildPayUrl(v));
                 v.setExtra(extra);
