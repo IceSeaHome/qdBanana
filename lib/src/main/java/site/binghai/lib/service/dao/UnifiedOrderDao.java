@@ -20,4 +20,6 @@ public interface UnifiedOrderDao extends JpaRepository<UnifiedOrder, Long> {
     List<UnifiedOrder> findAllByUserIdOrderByIdDesc(Long userId, Pageable pageable);
 
     List<UnifiedOrder> findAllByAppCodeAndCreatedBetween(Integer code, Long start, Long end);
+
+    List<UnifiedOrder> findByAppCodeAndUserId(Integer code,Long userId);
 }

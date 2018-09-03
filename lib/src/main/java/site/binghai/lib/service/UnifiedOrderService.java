@@ -52,11 +52,7 @@ public class UnifiedOrderService extends BaseService<UnifiedOrder> {
     }
 
     public List<UnifiedOrder> findByAppCodeAndUserId(PayBizEnum pb,Long userId){
-        UnifiedOrder example = new UnifiedOrder();
-        example.setUserId(userId);
-        example.setAppCode(pb.getCode());
-        example.setOrderId(null);
-        return query(example);
+        return dao.findByAppCodeAndUserId(pb.getCode(),userId);
     }
 
     public Long countByCode(PayBizEnum pb) {

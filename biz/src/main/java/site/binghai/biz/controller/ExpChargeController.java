@@ -41,19 +41,19 @@ public class ExpChargeController extends BaseController {
                 unifiedOrderService.findByAppCodeAndUserId(PayBizEnum.EXP_SEND, user.getId());
 
         if (!isEmptyList(data)) {
-            data.stream()
+            data = data.stream()
                     .filter(v -> CompareUtils.inAny(OrderStatusEnum.valueOf(v.getStatus()),
                             OrderStatusEnum.PAIED, OrderStatusEnum.COMPLETE, OrderStatusEnum.PROCESSING))
+                    .peek(v -> {
+                        JSONObject extra = newJSONObject();
+                        extra.put("expOrderId", expSendService.moreInfo(v).getId());
+                        extra.put("sinfo", expSendService.readSimpleInfo(v));
+                        extra.put("payUrl", unifiedOrderController.buildPayUrl(v));
+                        v.setExtra(extra);
+                        v.setOrderId(StringUtil.shorten(v.getOrderId(), 12) + "...");
+                    })
                     .sorted((a, b) -> b.getId() > a.getId() ? 1 : -1)
                     .collect(Collectors.toList());
-            data.forEach(v -> {
-                JSONObject extra = newJSONObject();
-                extra.put("expOrderId", expSendService.moreInfo(v).getId());
-                extra.put("sinfo", expSendService.readSimpleInfo(v));
-                extra.put("payUrl", unifiedOrderController.buildPayUrl(v));
-                v.setExtra(extra);
-                v.setOrderId(StringUtil.shorten(v.getOrderId(), 12) + "...");
-            });
         }
 
         map.put("orderParts", data);
