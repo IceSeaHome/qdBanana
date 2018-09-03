@@ -51,6 +51,13 @@ public class UnifiedOrderService extends BaseService<UnifiedOrder> {
         return dao.findAllByAppCodeOrderByCreatedDesc(pbe.getCode(), new PageRequest(page, pageSize));
     }
 
+    public List<UnifiedOrder> findByAppCodeAndUserId(PayBizEnum pb,Long userId){
+        UnifiedOrder example = new UnifiedOrder();
+        example.setUserId(userId);
+        example.setAppCode(pb.getCode());
+        return query(example);
+    }
+
     public Long countByCode(PayBizEnum pb) {
         return dao.countByAppCode(pb.getCode());
     }

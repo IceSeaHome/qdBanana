@@ -58,6 +58,9 @@ public class ListenerController extends BaseController {
             case EXP_TAKE:
                 expTakeService.onPaid(unifiedOrder);
                 break;
+            case EXP_CHARGE:
+                expSendService.onPaid(unifiedOrder);
+                break;
         }
     }
 }

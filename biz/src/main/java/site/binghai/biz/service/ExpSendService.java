@@ -1,6 +1,5 @@
 package site.binghai.biz.service;
 
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -19,6 +18,8 @@ import java.util.Map;
 public class ExpSendService extends BaseService<ExpSendOrder> implements UnifiedOrderMethods<ExpSendOrder> {
     @Autowired
     private ExpSendDao dao;
+    @Autowired
+    private ExpChargeService expChargeService;
 
     @Override
     public ExpSendDao getDao() {
@@ -54,6 +55,7 @@ public class ExpSendService extends BaseService<ExpSendOrder> implements Unified
         data.put("取件地址",expSendOrder.getFetchAddr());
         data.put("订单备注",expSendOrder.getRemark());
         data.put("订单总额",expSendOrder.getTotalFee()/100.0);
+        data.put("寄件补收",expChargeService.sumExtraFee(expSendOrder.getId()));
         return data;
     }
 

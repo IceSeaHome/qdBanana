@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import site.binghai.biz.entity.ExpBrand;
 import site.binghai.biz.entity.ExpSendOrder;
 import site.binghai.biz.service.ExpBrandService;
+import site.binghai.biz.service.ExpChargeService;
 import site.binghai.biz.service.ExpSendService;
 import site.binghai.biz.service.ExpTakeService;
 import site.binghai.lib.config.IceConfig;
@@ -34,6 +35,8 @@ public class UnifiedOrderController extends BaseController {
     private ExpSendService sendService;
     @Autowired
     private ExpBrandService expBrandService;
+    @Autowired
+    private ExpChargeService chargeService;
     @Autowired
     private IceConfig iceConfig;
 
@@ -70,6 +73,8 @@ public class UnifiedOrderController extends BaseController {
                 return sendService.readMap(unifiedOrder);
             case EXP_TAKE:
                 return takeService.readMap(unifiedOrder);
+            case EXP_CHARGE:
+                return chargeService.readMap(unifiedOrder);
         }
         return null;
     }
@@ -83,11 +88,11 @@ public class UnifiedOrderController extends BaseController {
         WxUser user = getSessionPersistent(WxUser.class);
         List<UnifiedOrder> data = unifiedOrderService.findByUserIdOrderByIdDesc(user.getId(), 0, 1000);
         data.forEach(v -> {
-            v.setOrderId(StringUtil.shorten(v.getOrderId(), 12) + "...");
             JSONObject extra = newJSONObject();
             extra.put("sinfo", readSimpleInfo(v));
             extra.put("payUrl", buildPayUrl(v));
             v.setExtra(extra);
+            v.setOrderId(StringUtil.shorten(v.getOrderId(), 12) + "...");
             switch (OrderStatusEnum.valueOf(v.getStatus())) {
                 case COMPLETE:
                     completed.add(v);
@@ -113,6 +118,8 @@ public class UnifiedOrderController extends BaseController {
                 return sendService.readSimpleInfo(unifiedOrder);
             case EXP_TAKE:
                 return takeService.readSimpleInfo(unifiedOrder);
+            case EXP_CHARGE:
+                return chargeService.readSimpleInfo(unifiedOrder);
         }
         return null;
     }
@@ -129,6 +136,8 @@ public class UnifiedOrderController extends BaseController {
                 return sendService.moreInfo(unifiedOrder);
             case EXP_TAKE:
                 return takeService.moreInfo(unifiedOrder);
+            case EXP_CHARGE:
+                return chargeService.moreInfo(unifiedOrder);
         }
         return null;
     }
@@ -192,6 +201,9 @@ public class UnifiedOrderController extends BaseController {
                 break;
             case EXP_TAKE:
                 data = takeService.cancel(unifiedOrder);
+                break;
+            case EXP_CHARGE:
+                data = chargeService.cancel(unifiedOrder);
                 break;
             default:
                 return fail("取消失败-BIZ-NOT-SUPPORT");

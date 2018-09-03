@@ -7,7 +7,7 @@
     <meta content="yes" name="apple-mobile-web-app-capable"/>
     <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
     <meta content="telephone=no" name="format-detection"/>
-    <title>我的订单</title>
+    <title>补充寄件费</title>
     <link rel="stylesheet" type="text/css" href="/css/base.css">
     <link rel="stylesheet" type="text/css" href="/css/common.css">
     <script type="text/javascript" src="/js/jquery.min.js"></script>
@@ -19,7 +19,7 @@
 <body>
 <header class="header" id="header">
     <a href="javascript:history.go(-1)" target=_self class="back">返回</a>
-    <h1>我的订单</h1>
+    <h1>补充寄件费</h1>
 </header>
 <!--header-end-->
 
@@ -27,20 +27,9 @@
 
     <!--我的订单选项卡-->
     <div id="my-order" class="my-order">
-
-        <!--栏目-->
-        <ul id="nav">
-            <li><span class="selected"><h2>全部订单</h2></span></li>
-            <li style="padding-left: 15%"><span><h2>已完成</h2></span></li>
-            <li style="padding-left: 15%"><span><h2>待付款</h2></span></li>
-        </ul>
-        <!--栏目-->
-
         <!--内容-->
         <div id="menu_con">
-            <section th:each="part,stat:${orderParts}" class="tag"
-                     th:style="${stat.index == 0?'display:block':'display:none'}">
-
+            <section th:each="part:${orderParts}" class="tag">
                 <div class="my-order-item" th:each="order:${part}" th:onclick="${'detailed('+order.id+')'}">
                     <div class="my-order-item-tit clearfix">
                         <h3 th:text="${'订单号：'+ order.orderId+'【'+order.orderBiz().name+'】'}">订单号：888888888</h3>
@@ -49,14 +38,6 @@
                     <div class="my-order-item-txt">
                         <div class="my-order-time" th:text="${order.createdTime}">2015-11-28 13:30</div>
                         <div class="my-order-address" th:text="${order.extra.sinfo}">简略信息</div>
-                    </div>
-                    <div class="my-order-item-btn">
-                        <div class="pos-r">
-                            <!--<span class="my-order-item-red" th:if="${order.status < 4}">-->
-                                <!--<a href="javascript:onNotSupport()">取消订单</a> </span>-->
-                            <span class="my-order-item-red" th:if="${order.status < 2}">
-                                <a th:href="${order.extra.payUrl}">立即支付</a></span>
-                        </div>
                     </div>
                 </div>
             </section>
@@ -127,8 +108,21 @@
         });
     </script>
     <script>
-        function onNotSupport() {
-            myNotice(false,"测试中","暂时不支持取消哦");
+        function submit(map) {
+            $.ajax({
+                type:"POST",
+                url:'/user/expChargeOrder/create',
+                contentType:"application/json",
+                dataType:"json",
+                data:JSON.stringify(map),
+                success:function(data){
+                    if(data.status == 'SUCCESS'){
+                        window.location.href = data.msg;
+                    }else{
+                        myNotice(false,'下单失败',data.msg);
+                    }
+                }
+            });
         }
 
         function myNotice(success, title, msg) {
@@ -140,7 +134,25 @@
         }
 
         function detailed(id) {
-            window.location.href="detail?unifiedId="+id;
+            swal({
+                title: "请输入费用",
+                input: 'text',
+                showCancelButton: true,
+                inputValidator: function (value) {
+                    return new Promise(function (resolve, reject) {
+                        if (value) {
+                            resolve()
+                        } else {
+                            reject('这是个必填项哦')
+                        }
+                    })
+                }
+            }).then(function (result) {
+                var dataMap = {};
+                dataMap.expId = id;
+                dataMap.fee = result;
+                submit(dataMap);
+            })
         }
     </script>
 
