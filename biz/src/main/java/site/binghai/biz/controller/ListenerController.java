@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import site.binghai.biz.service.ExpChargeService;
 import site.binghai.biz.service.ExpSendService;
 import site.binghai.biz.service.ExpTakeService;
 import site.binghai.lib.config.IceConfig;
@@ -26,6 +27,8 @@ public class ListenerController extends BaseController {
     private ExpSendService expSendService;
     @Autowired
     private ExpTakeService expTakeService;
+    @Autowired
+    private ExpChargeService expChargeService;
 
 
     @RequestMapping("payNotify")
@@ -59,7 +62,7 @@ public class ListenerController extends BaseController {
                 expTakeService.onPaid(unifiedOrder);
                 break;
             case EXP_CHARGE:
-                expSendService.onPaid(unifiedOrder);
+                expChargeService.onPaid(unifiedOrder);
                 break;
         }
     }

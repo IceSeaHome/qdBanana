@@ -84,7 +84,7 @@ public class ExpChargeController extends BaseController {
         UnifiedOrder unifiedOrder = unifiedOrderService.newOrder(
                 PayBizEnum.EXP_CHARGE,
                 user,
-                "寄件费" + charge.getFee(),
+                "寄件费",
                 charge.getFee().intValue());
 
         charge.setUnifiedId(unifiedOrder.getId());

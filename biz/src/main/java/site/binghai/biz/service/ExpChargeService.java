@@ -42,6 +42,7 @@ public class ExpChargeService extends BaseService<ExpChargeOrder> implements Uni
         return expSendService.readMap(unifiedOrderService.findById(expSendOrder.getUnifiedId()));
     }
 
+    @Override
     public void onPaid(UnifiedOrder order) {
         ExpChargeOrder expChargeOrder = moreInfo(order);
         expChargeOrder.setStatus(OrderStatusEnum.PAIED.getCode());
