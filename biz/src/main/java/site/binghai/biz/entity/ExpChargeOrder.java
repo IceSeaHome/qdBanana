@@ -13,7 +13,7 @@ import javax.persistence.Id;
 public class ExpChargeOrder extends BaseEntity {
     @Id
     @GeneratedValue
-    private String id;
+    private Long id;
     private Long userId;
     private Integer fee;
     private Boolean paid;
