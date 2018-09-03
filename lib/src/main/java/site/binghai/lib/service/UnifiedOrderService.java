@@ -55,6 +55,7 @@ public class UnifiedOrderService extends BaseService<UnifiedOrder> {
         UnifiedOrder example = new UnifiedOrder();
         example.setUserId(userId);
         example.setAppCode(pb.getCode());
+        example.setOrderId(null);
         return query(example);
     }
 

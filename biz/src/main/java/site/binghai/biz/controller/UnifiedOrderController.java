@@ -54,7 +54,7 @@ public class UnifiedOrderController extends BaseController {
         return "detail";
     }
 
-    private String buildPayUrl(UnifiedOrder unifiedOrder) {
+    public String buildPayUrl(UnifiedOrder unifiedOrder) {
         String url = iceConfig.getWxPayUrl()
                 + "?title=" + unifiedOrder.getTitle()
                 + "&totalFee=" + unifiedOrder.getShouldPay()
