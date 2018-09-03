@@ -30,7 +30,7 @@ public class ExpChargeController extends BaseController {
     public String prepare(ModelMap map) {
         WxUser user = getSessionPersistent(WxUser.class);
         List<UnifiedOrder> data =
-                unifiedOrderService.findByAppCodeAndUserId(PayBizEnum.EXP_CHARGE, user.getId());
+                unifiedOrderService.findByAppCodeAndUserId(PayBizEnum.EXP_SEND, user.getId());
 
         if (!isEmptyList(data)) {
             data.stream()
