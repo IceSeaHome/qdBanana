@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import site.binghai.biz.entity.ExpSendOrder;
+import site.binghai.biz.service.ExpChargeService;
 import site.binghai.biz.service.ExpSendService;
 import site.binghai.biz.service.ExpTakeService;
 import site.binghai.lib.controller.BaseController;
@@ -21,6 +22,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/manage/expSend/")
 public class ExpSendManageController extends BaseController {
 
+    @Autowired
+    private ExpChargeService expChargeService;
     @Autowired
     private ExpSendService sendService;
     @Autowired
@@ -61,7 +64,7 @@ public class ExpSendManageController extends BaseController {
             infos.put("本单费用", String.format("%.2f", l.getTotalFee() / 100.0));
             infos.put("用户备注",l.getRemark());
             infos.put("快递单号",l.getExpNo());
-
+            infos.put("寄件补收",expChargeService.sumExtraFee(l.getId()));
             obj.put("infos", infos);
             array.add(obj);
         }
