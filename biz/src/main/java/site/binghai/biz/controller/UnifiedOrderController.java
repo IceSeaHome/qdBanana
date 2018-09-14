@@ -7,10 +7,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import site.binghai.biz.entity.ExpBrand;
 import site.binghai.biz.entity.ExpSendOrder;
-import site.binghai.biz.service.ExpBrandService;
-import site.binghai.biz.service.ExpChargeService;
-import site.binghai.biz.service.ExpSendService;
-import site.binghai.biz.service.ExpTakeService;
+import site.binghai.biz.service.*;
 import site.binghai.lib.config.IceConfig;
 import site.binghai.lib.controller.BaseController;
 import site.binghai.lib.entity.UnifiedOrder;
@@ -37,6 +34,8 @@ public class UnifiedOrderController extends BaseController {
     private ExpBrandService expBrandService;
     @Autowired
     private ExpChargeService chargeService;
+    @Autowired
+    private CommonPayOrderService commonPayOrderService;
     @Autowired
     private IceConfig iceConfig;
 
@@ -75,6 +74,8 @@ public class UnifiedOrderController extends BaseController {
                 return takeService.readMap(unifiedOrder);
             case EXP_CHARGE:
                 return chargeService.readMap(unifiedOrder);
+            case COMMON_PAY:
+                return commonPayOrderService.readMap(unifiedOrder);
         }
         return null;
     }
@@ -120,6 +121,8 @@ public class UnifiedOrderController extends BaseController {
                 return takeService.readSimpleInfo(unifiedOrder);
             case EXP_CHARGE:
                 return chargeService.readSimpleInfo(unifiedOrder);
+            case COMMON_PAY:
+                return commonPayOrderService.readSimpleInfo(unifiedOrder);
         }
         return null;
     }
@@ -138,6 +141,8 @@ public class UnifiedOrderController extends BaseController {
                 return takeService.moreInfo(unifiedOrder);
             case EXP_CHARGE:
                 return chargeService.moreInfo(unifiedOrder);
+            case COMMON_PAY:
+                return commonPayOrderService.moreInfo(unifiedOrder);
         }
         return null;
     }
@@ -204,6 +209,9 @@ public class UnifiedOrderController extends BaseController {
                 break;
             case EXP_CHARGE:
                 data = chargeService.cancel(unifiedOrder);
+                break;
+            case COMMON_PAY:
+                data = commonPayOrderService.cancel(unifiedOrder);
                 break;
             default:
                 return fail("取消失败-BIZ-NOT-SUPPORT");

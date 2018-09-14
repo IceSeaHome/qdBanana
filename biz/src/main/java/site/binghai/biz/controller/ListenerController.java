@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import site.binghai.biz.service.CommonPayOrderService;
 import site.binghai.biz.service.ExpChargeService;
 import site.binghai.biz.service.ExpSendService;
 import site.binghai.biz.service.ExpTakeService;
@@ -29,6 +30,8 @@ public class ListenerController extends BaseController {
     private ExpTakeService expTakeService;
     @Autowired
     private ExpChargeService expChargeService;
+    @Autowired
+    private CommonPayOrderService commonPayOrderService;
 
 
     @RequestMapping("payNotify")
@@ -63,6 +66,9 @@ public class ListenerController extends BaseController {
                 break;
             case EXP_CHARGE:
                 expChargeService.onPaid(unifiedOrder);
+                break;
+            case COMMON_PAY:
+                commonPayOrderService.onPaid(unifiedOrder);
                 break;
         }
     }

@@ -1,0 +1,113 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+          name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <meta content="telephone=no" name="format-detection"/>
+    <title>寄件付费</title>
+    <link rel="stylesheet" type="text/css" href="/css/base.css">
+    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script src="/js/common.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://cdn.binghai.site/o_1clq1itcp1uf5189g2cg1rhq1g2oa.css">
+    <script src="http://cdn.binghai.site/o_1clq1jn5emrb1d0cg37h4pgkia.js"></script>
+</head>
+
+<body>
+<header class="header" id="header">
+    <a href="javascript:history.go(-1)" target=_self class="back">返回</a>
+    <h1>寄件付费</h1>
+</header>
+<!--header-end-->
+
+<div class="container" id="container">
+
+    <!--我的订单选项卡-->
+    <div id="my-order" class="my-order">
+        <a class="pay" href="javascript:pay(1)">到店支付</a>
+        <br/><br/><br/><br/>
+        <a class="pay" href="javascript:pay(2)">上门支付</a>
+    </div>
+
+    <script>
+        var dataMap = {};
+        function submit(map) {
+            $.ajax({
+                type:"POST",
+                url:'/user/commonPay/create',
+                contentType:"application/json",
+                dataType:"json",
+                data:JSON.stringify(dataMap),
+                success:function(data){
+                    if(data.status == 'SUCCESS'){
+                        window.location.href = data.msg;
+                    }else{
+                        myNotice(false,'下单失败',data.msg);
+                    }
+                }
+            });
+        }
+
+        function myNotice(success, title, msg) {
+            swal(
+                title,
+                msg,
+                success ? 'success' : 'error'
+            )
+        }
+
+        function pay(type) {
+            dataMap.payName = '到店支付';
+            if(type == 2){
+                dataMap.payName = '上门支付';
+            }
+
+            swal({
+                title: "请输入单号",
+                input: 'text',
+                showCancelButton: true,
+                inputValidator: function (value) {
+                    return new Promise(function (resolve, reject) {
+                        if (value) {
+                            resolve()
+                        } else {
+                            reject('这是个必填项哦')
+                        }
+                    })
+                }
+            }).then(function (result) {
+                dataMap.remark = result;
+                inputFee();
+            })
+        }
+
+        function inputFee() {
+            swal({
+                title: "请输入费用",
+                input: 'text',
+                showCancelButton: true,
+                inputValidator: function (value) {
+                    return new Promise(function (resolve, reject) {
+                        if (value) {
+                            resolve()
+                        } else {
+                            reject('这是个必填项哦')
+                        }
+                    })
+                }
+            }).then(function (result) {
+                dataMap.fee = result;
+                submit(dataMap);
+            })
+        }
+    </script>
+
+</div>
+<!--container-end-->
+
+
+</body>
+</html>

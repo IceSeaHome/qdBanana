@@ -9,7 +9,8 @@ import java.util.Map;
 public enum PayBizEnum {
     EXP_TAKE(0,"代取快递"),
     EXP_SEND(1,"代寄快递"),
-    EXP_CHARGE(2,"寄件费用")
+    EXP_CHARGE(2,"寄件费用"),
+    COMMON_PAY(3,"通用支付单"),
     ;
 
     private int code;
