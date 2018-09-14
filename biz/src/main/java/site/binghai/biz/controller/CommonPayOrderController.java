@@ -58,7 +58,7 @@ public class CommonPayOrderController extends BaseController {
         charge.setPayName(payName);
 
         UnifiedOrder unifiedOrder = unifiedOrderService.newOrder(
-                PayBizEnum.EXP_CHARGE,
+                PayBizEnum.COMMON_PAY,
                 user,
                 payName,
                 charge.getFee().intValue());
