@@ -55,13 +55,13 @@ public class ExpSendController extends BaseController {
             return fail("这几项都是必填项哦~");
         }
 
-        WxUser user = getSessionPersistent(WxUser.class);
 
         // 补充业务逻辑
         if (!expBrand.getEnableSend()) {
             return fail(expBrand.getExpName() + "不支持寄件业务!");
         }
 
+        WxUser user = getSessionPersistent(WxUser.class);
         order.setStatus(OrderStatusEnum.CREATED.getCode());
         order.setPaid(Boolean.FALSE);
         order.setTotalFee(expBrand.getTakeServiceFee());

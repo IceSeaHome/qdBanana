@@ -5,11 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import site.binghai.biz.entity.ExpBrand;
-import site.binghai.biz.entity.ExpSendOrder;
 import site.binghai.biz.service.*;
 import site.binghai.lib.config.IceConfig;
 import site.binghai.lib.controller.BaseController;
+import site.binghai.lib.def.UnifiedOrderMethods;
 import site.binghai.lib.entity.UnifiedOrder;
 import site.binghai.lib.entity.WxUser;
 import site.binghai.lib.enums.OrderStatusEnum;
@@ -27,17 +26,11 @@ public class UnifiedOrderController extends BaseController {
     @Autowired
     private UnifiedOrderService unifiedOrderService;
     @Autowired
-    private ExpTakeService takeService;
-    @Autowired
-    private ExpSendService sendService;
-    @Autowired
-    private ExpBrandService expBrandService;
-    @Autowired
-    private ExpChargeService chargeService;
-    @Autowired
-    private CommonPayOrderService commonPayOrderService;
-    @Autowired
     private IceConfig iceConfig;
+    @Autowired
+    private WxUserService wxUserService;
+    @Autowired
+    private PayBizServiceFactory payBizServiceFactory;
 
     @GetMapping("detail")
     public String detail(@RequestParam Long unifiedId, ModelMap map) {
@@ -49,35 +42,57 @@ public class UnifiedOrderController extends BaseController {
 
         order.setExtra(readMap(order));
         map.put("order", order);
-        map.put("payUrl", buildPayUrl(order));
+        map.put("payUrl", payBizServiceFactory.buildPayUrl(order));
         return "detail";
     }
 
-    public String buildPayUrl(UnifiedOrder unifiedOrder) {
-        String url = iceConfig.getWxPayUrl()
-                + "?title=" + unifiedOrder.getTitle()
-                + "&totalFee=" + unifiedOrder.getShouldPay()
-                + "&orderId=" + unifiedOrder.getOrderId();
-        if (unifiedOrder.getAppCode().equals(PayBizEnum.EXP_SEND.getCode())) {
-            ExpSendOrder expSendOrder = sendService.moreInfo(unifiedOrder);
-            ExpBrand expBrand = expBrandService.findById(expSendOrder.getExpId());
-            return url + "&callBack=" + expBrand.getServiceUrl();
+    @GetMapping("walletPay")
+    public String walletPay(@RequestParam Long unifiedId, ModelMap map) {
+        WxUser wxUser = updateSessionUser();
+        UnifiedOrder order = unifiedOrderService.findById(unifiedId);
+        if (wxUser.getWallet() == null || wxUser.getWallet() < order.getShouldPay()) {
+            return "redirect:detail?unifiedId=" + unifiedId;
         }
-        return url + "&callBack=" + iceConfig.getAppRoot() + "/user/unified/detail?unifiedId=" + unifiedOrder.getId();
+
+        wxUser.setWallet(wxUser.getWallet() - order.getShouldPay());
+        wxUserService.update(wxUser);
+
+        try {
+            payBizServiceFactory.onPayNotify(order.getOrderId());
+        } catch (Exception e) {
+            logger.error("wallet pay failed,{}", order, e);
+        }
+
+        return "redirect:detail?unifiedId=" + unifiedId;
     }
 
-    private Map readMap(UnifiedOrder unifiedOrder) {
-        switch (PayBizEnum.valueOf(unifiedOrder.getAppCode())) {
-            case EXP_SEND:
-                return sendService.readMap(unifiedOrder);
-            case EXP_TAKE:
-                return takeService.readMap(unifiedOrder);
-            case EXP_CHARGE:
-                return chargeService.readMap(unifiedOrder);
-            case COMMON_PAY:
-                return commonPayOrderService.readMap(unifiedOrder);
+    @GetMapping("multiPay")
+    public String multiPay(@RequestParam Long unifiedId, ModelMap map) {
+        UnifiedOrder order = unifiedOrderService.findById(unifiedId);
+        WxUser wxUser = updateSessionUser();
+        boolean enableWalletPay = true;
+        if (wxUser.getWallet() == null || wxUser.getWallet() < order.getShouldPay()) {
+            enableWalletPay = false;
         }
-        return null;
+
+        map.put("enableWalletPay", enableWalletPay);
+        map.put("wxPayUrl", payBizServiceFactory.buildWxPayUrl(order));
+        map.put("walletPayUrl", "/user/unified/walletPay?unifiedId=" + unifiedId);
+        return "multiPay";
+    }
+
+    private WxUser updateSessionUser() {
+        WxUser user = getSessionPersistent(WxUser.class);
+        user = wxUserService.findById(user.getId());
+        persistent(user);
+        return user;
+    }
+
+
+    private Map readMap(UnifiedOrder unifiedOrder) {
+        return payBizServiceFactory
+                .get(unifiedOrder.getAppCode())
+                .readMap(unifiedOrder);
     }
 
     @GetMapping("list")
@@ -91,7 +106,7 @@ public class UnifiedOrderController extends BaseController {
         data.forEach(v -> {
             JSONObject extra = newJSONObject();
             extra.put("sinfo", readSimpleInfo(v));
-            extra.put("payUrl", buildPayUrl(v));
+            extra.put("payUrl", payBizServiceFactory.buildPayUrl(v));
             v.setExtra(extra);
             v.setOrderId(StringUtil.shorten(v.getOrderId(), 12) + "...");
             switch (OrderStatusEnum.valueOf(v.getStatus())) {
@@ -114,37 +129,15 @@ public class UnifiedOrderController extends BaseController {
     }
 
     private Object readSimpleInfo(UnifiedOrder unifiedOrder) {
-        switch (PayBizEnum.valueOf(unifiedOrder.getAppCode())) {
-            case EXP_SEND:
-                return sendService.readSimpleInfo(unifiedOrder);
-            case EXP_TAKE:
-                return takeService.readSimpleInfo(unifiedOrder);
-            case EXP_CHARGE:
-                return chargeService.readSimpleInfo(unifiedOrder);
-            case COMMON_PAY:
-                return commonPayOrderService.readSimpleInfo(unifiedOrder);
-        }
-        return null;
+        return payBizServiceFactory
+                .get(unifiedOrder.getAppCode())
+                .readSimpleInfo(unifiedOrder);
     }
 
     @GetMapping("pay")
     @ResponseBody
     public Object pay(@RequestParam Long unifiedId) {
         return "redirect:" + iceConfig.getWxPayUrl() + "?unifiedId=" + unifiedId;
-    }
-
-    private Object moreInfo(UnifiedOrder unifiedOrder) {
-        switch (PayBizEnum.valueOf(unifiedOrder.getAppCode())) {
-            case EXP_SEND:
-                return sendService.moreInfo(unifiedOrder);
-            case EXP_TAKE:
-                return takeService.moreInfo(unifiedOrder);
-            case EXP_CHARGE:
-                return chargeService.moreInfo(unifiedOrder);
-            case COMMON_PAY:
-                return commonPayOrderService.moreInfo(unifiedOrder);
-        }
-        return null;
     }
 
     @GetMapping("cancel")
@@ -198,26 +191,17 @@ public class UnifiedOrderController extends BaseController {
     }
 
     private Object cancelBizOrder(UnifiedOrder unifiedOrder) {
-        Object data = null;
         //todo 取消成功通知
-        switch (PayBizEnum.valueOf(unifiedOrder.getAppCode())) {
-            case EXP_SEND:
-                data = sendService.cancel(unifiedOrder);
-                break;
-            case EXP_TAKE:
-                data = takeService.cancel(unifiedOrder);
-                break;
-            case EXP_CHARGE:
-                data = chargeService.cancel(unifiedOrder);
-                break;
-            case COMMON_PAY:
-                data = commonPayOrderService.cancel(unifiedOrder);
-                break;
-            default:
-                return fail("取消失败-BIZ-NOT-SUPPORT");
-        }
+        Object data = null;
+        UnifiedOrderMethods service = payBizServiceFactory
+                .get(unifiedOrder.getAppCode());
 
-        return success(data, "取消成功");
+        if (service != null) {
+            data = service.cancel(unifiedOrder);
+            return success(data, "取消成功");
+        } else {
+            return fail("取消失败-BIZ-NOT-SUPPORT");
+        }
     }
 
     /**

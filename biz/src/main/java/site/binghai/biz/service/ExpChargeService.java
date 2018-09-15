@@ -7,6 +7,7 @@ import site.binghai.biz.entity.ExpSendOrder;
 import site.binghai.lib.def.UnifiedOrderMethods;
 import site.binghai.lib.entity.UnifiedOrder;
 import site.binghai.lib.enums.OrderStatusEnum;
+import site.binghai.lib.enums.PayBizEnum;
 import site.binghai.lib.service.BaseService;
 import site.binghai.lib.service.UnifiedOrderService;
 
@@ -54,6 +55,11 @@ public class ExpChargeService extends BaseService<ExpChargeOrder> implements Uni
     public String readSimpleInfo(UnifiedOrder order) {
         ExpChargeOrder expChargeOrder = moreInfo(order);
         return "寄件费用附加 " + expChargeOrder.getFee() / 100.0 + "元";
+    }
+
+    @Override
+    public PayBizEnum getBizType() {
+        return PayBizEnum.EXP_CHARGE;
     }
 
     public String sumExtraFee(Long expSendOrderId) {

@@ -2,6 +2,8 @@ package site.binghai.lib.def;
 
 
 import site.binghai.lib.entity.UnifiedOrder;
+import site.binghai.lib.enums.PayBizEnum;
+
 import java.util.Map;
 
 /**
@@ -11,13 +13,23 @@ import java.util.Map;
  */
 public interface UnifiedOrderMethods<T> {
     T moreInfo(UnifiedOrder order);
+
     T cancel(UnifiedOrder order);
+
     /**
      * 转换成用户可读的k，v结构
-     * */
+     */
     Map readMap(UnifiedOrder order);
 
     void onPaid(UnifiedOrder order);
 
     String readSimpleInfo(UnifiedOrder order);
+
+    Class<T> getTypeArguement();
+
+    PayBizEnum getBizType();
+
+    T newInstance(Map map);
+
+    T save(T t);
 }

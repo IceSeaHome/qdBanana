@@ -3,6 +3,7 @@ package site.binghai.biz.entity;
 import lombok.Data;
 import site.binghai.lib.entity.BaseEntity;
 import site.binghai.lib.enums.OrderStatusEnum;
+import site.binghai.lib.enums.PayBizEnum;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,20 +11,12 @@ import javax.persistence.Id;
 /** 代取快递订单 */
 @Entity
 @Data
-public class ExpTakeOrder extends BaseEntity {
+public class ExpTakeOrder extends PayBizEntity {
     @Id
     @GeneratedValue
     private Long id;
-    private Long unifiedId;
-
-    private Long userId;
 
     private Long totalFee;
-    private Boolean paid;
-    /**
-     * {@link OrderStatusEnum}
-     * */
-    private Integer status;
 
     /**
      * 取件短信
@@ -57,4 +50,9 @@ public class ExpTakeOrder extends BaseEntity {
     private String sendPhone;
 
     private String remark;
+
+    @Override
+    public PayBizEnum getBizType() {
+        return PayBizEnum.EXP_TAKE;
+    }
 }

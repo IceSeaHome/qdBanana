@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import site.binghai.biz.entity.ExpChargeOrder;
 import site.binghai.biz.service.ExpChargeService;
 import site.binghai.biz.service.ExpSendService;
+import site.binghai.biz.service.PayBizServiceFactory;
 import site.binghai.lib.controller.BaseController;
 import site.binghai.lib.entity.UnifiedOrder;
 import site.binghai.lib.entity.WxUser;
@@ -24,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/user/expCharge/")
-public class ExpChargeController extends BaseController {
+public class ExpChargeController extends PayBizController<ExpChargeOrder> {
     @Autowired
     private ExpChargeService chargeService;
     @Autowired
@@ -32,7 +33,7 @@ public class ExpChargeController extends BaseController {
     @Autowired
     private ExpSendService expSendService;
     @Autowired
-    private UnifiedOrderController unifiedOrderController;
+    private PayBizServiceFactory payBizServiceFactory;
 
     @GetMapping("prepare")
     public String prepare(ModelMap map) {
@@ -48,7 +49,7 @@ public class ExpChargeController extends BaseController {
                         JSONObject extra = newJSONObject();
                         extra.put("expOrderId", expSendService.moreInfo(v).getId());
                         extra.put("sinfo", expSendService.readSimpleInfo(v));
-                        extra.put("payUrl", unifiedOrderController.buildPayUrl(v));
+                        extra.put("payUrl", payBizServiceFactory.buildPayUrl(v));
                         v.setExtra(extra);
                         v.setOrderId(StringUtil.shorten(v.getOrderId(), 12) + "...");
                     })
@@ -62,7 +63,7 @@ public class ExpChargeController extends BaseController {
 
     @PostMapping("create")
     @ResponseBody
-    public Object create(@RequestBody Map map) {
+    public Object create(@RequestBody Map map) throws Exception {
         int fee = 0;
         try {
             double dfee = getDouble(map, "fee");
@@ -73,23 +74,6 @@ public class ExpChargeController extends BaseController {
             return fail("费用输入有误!");
         }
 
-        ExpChargeOrder charge = chargeService.newInstance(map);
-
-        WxUser user = getSessionPersistent(WxUser.class);
-
-        charge.setStatus(OrderStatusEnum.CREATED.getCode());
-        charge.setPaid(Boolean.FALSE);
-        charge.setUserId(user.getId());
-
-        UnifiedOrder unifiedOrder = unifiedOrderService.newOrder(
-                PayBizEnum.EXP_CHARGE,
-                user,
-                "寄件费",
-                charge.getFee().intValue());
-
-        charge.setUnifiedId(unifiedOrder.getId());
-
-        charge = chargeService.save(charge);
-        return success(charge, "/user/unified/detail?unifiedId=" + unifiedOrder.getId());
+        return create(map, fee);
     }
 }

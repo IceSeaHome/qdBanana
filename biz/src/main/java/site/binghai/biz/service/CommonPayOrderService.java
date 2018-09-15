@@ -49,4 +49,9 @@ public class CommonPayOrderService extends BaseService<CommonPayOrder> implement
         CommonPayOrder commonPayOrder = moreInfo(order);
         return commonPayOrder.getPayName() + "/" + commonPayOrder.getRemark();
     }
+
+    @Override
+    public PayBizEnum getBizType() {
+        return PayBizEnum.COMMON_PAY;
+    }
 }

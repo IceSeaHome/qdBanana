@@ -1,17 +1,18 @@
 package site.binghai.biz.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import site.binghai.biz.service.CommonPayOrderService;
-import site.binghai.biz.service.ExpChargeService;
-import site.binghai.biz.service.ExpSendService;
-import site.binghai.biz.service.ExpTakeService;
+import site.binghai.biz.entity.VipChargeOrder;
+import site.binghai.biz.entity.VipPkg;
+import site.binghai.biz.service.*;
 import site.binghai.lib.config.IceConfig;
 import site.binghai.lib.controller.BaseController;
 import site.binghai.lib.entity.UnifiedOrder;
+import site.binghai.lib.entity.WxUser;
 import site.binghai.lib.enums.OrderStatusEnum;
 import site.binghai.lib.enums.PayBizEnum;
 import site.binghai.lib.service.UnifiedOrderService;
@@ -25,13 +26,9 @@ public class ListenerController extends BaseController {
     @Autowired
     private UnifiedOrderService unifiedOrderService;
     @Autowired
-    private ExpSendService expSendService;
+    private PayBizServiceFactory payBizServiceFactory;
     @Autowired
-    private ExpTakeService expTakeService;
-    @Autowired
-    private ExpChargeService expChargeService;
-    @Autowired
-    private CommonPayOrderService commonPayOrderService;
+    private WxUserService wxUserService;
 
 
     @RequestMapping("payNotify")
@@ -44,32 +41,14 @@ public class ListenerController extends BaseController {
             return fail("Illegal signature");
         }
 
-        UnifiedOrder unifiedOrder = unifiedOrderService.findByOrderId(orderId);
-        if (unifiedOrder == null || unifiedOrder.getStatus() >= OrderStatusEnum.PAIED.getCode()) {
-            return fail("status not right!");
+        try {
+            payBizServiceFactory.onPayNotify(orderId);
+        } catch (Exception e) {
+            logger.error("onPayNotify error !totalPay:{},orderId:{},sign:{}", totalPay, orderId, sign, e);
+            return fail(e.getMessage());
         }
-
-        unifiedOrder.setStatus(OrderStatusEnum.PAIED.getCode());
-        unifiedOrderService.update(unifiedOrder);
-
-        payEvent(unifiedOrder);
         return success();
     }
 
-    private void payEvent(UnifiedOrder unifiedOrder) {
-        switch (PayBizEnum.valueOf(unifiedOrder.getAppCode())) {
-            case EXP_SEND:
-                expSendService.onPaid(unifiedOrder);
-                break;
-            case EXP_TAKE:
-                expTakeService.onPaid(unifiedOrder);
-                break;
-            case EXP_CHARGE:
-                expChargeService.onPaid(unifiedOrder);
-                break;
-            case COMMON_PAY:
-                commonPayOrderService.onPaid(unifiedOrder);
-                break;
-        }
-    }
+
 }

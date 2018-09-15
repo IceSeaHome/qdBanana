@@ -7,7 +7,7 @@
     <meta content="yes" name="apple-mobile-web-app-capable"/>
     <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
     <meta content="telephone=no" name="format-detection"/>
-    <title>寄件付费</title>
+    <title>会员充值</title>
     <link rel="stylesheet" type="text/css" href="/css/base.css">
     <link rel="stylesheet" type="text/css" href="/css/common.css">
     <script type="text/javascript" src="/js/jquery.min.js"></script>
@@ -19,7 +19,7 @@
 <body>
 <header class="header" id="header">
     <a href="javascript:history.go(-1)" target=_self class="back">返回</a>
-    <h1>寄件付费</h1>
+    <h1>会员充值</h1>
 </header>
 <!--header-end-->
 
@@ -27,10 +27,10 @@
 
     <!--我的订单选项卡-->
     <div id="my-order" class="my-order">
-        <br/><br/>
-        <a class="pay" href="javascript:pay(1)">到店支付</a>
-        <br/>
-        <a class="pay" href="javascript:pay(2)">上门支付</a>
+        <div th:each="pkg:${pkgs}">
+            <br/>
+            <a class="pay" th:href="${'javascript:pay('+pkg.id+')'}" th:text="${'充'+pkg.price/100.0+'得'+pkg.recharge/100.0}">1-1</a>
+        </div>
     </div>
 
     <script>

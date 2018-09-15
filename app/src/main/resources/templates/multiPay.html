@@ -1,0 +1,56 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+          name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable"/>
+    <meta content="black" name="apple-mobile-web-app-status-bar-style"/>
+    <meta content="telephone=no" name="format-detection"/>
+    <title>选择支付方式</title>
+    <link rel="stylesheet" type="text/css" href="/css/base.css">
+    <link rel="stylesheet" type="text/css" href="/css/common.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script src="/js/common.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://cdn.binghai.site/o_1clq1itcp1uf5189g2cg1rhq1g2oa.css">
+    <script src="http://cdn.binghai.site/o_1clq1jn5emrb1d0cg37h4pgkia.js"></script>
+</head>
+
+<body>
+<header class="header" id="header">
+    <a href="javascript:history.go(-1)" target=_self class="back">返回</a>
+    <h1>选择支付方式</h1>
+</header>
+<!--header-end-->
+
+<div class="container" id="container">
+
+    <!--我的订单选项卡-->
+    <div id="my-order" class="my-order">
+        <br/><br/>
+        <a class="pay" th:href="${enableWalletPay?walletPayUrl:'javascript:insufficient()'}" th:text="${enableWalletPay?'钱包支付':'钱包支付(余额不足)'}">钱包支付</a>
+        <br/>
+        <a class="pay" th:href="${wxPayUrl}">微信支付</a>
+    </div>
+
+    <script>
+        function myNotice(success, title, msg) {
+            swal(
+                title,
+                msg,
+                success ? 'success' : 'error'
+            )
+        }
+
+        function insufficient() {
+            myNotice(false,"余额不足","请先到'我的'页面充值后使用，充值有优惠!")
+        }
+
+    </script>
+
+</div>
+<!--container-end-->
+
+
+</body>
+</html>

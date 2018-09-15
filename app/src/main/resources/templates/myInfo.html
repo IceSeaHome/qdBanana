@@ -30,6 +30,9 @@
             <li><a href="javascript:inputIntoMap('userName')">
                 <span>姓名</span><em id="userName" th:text="${user.userName}">点我修改</em>
             </a></li>
+            <li><a >
+                <span>钱包</span><em  th:text="${user.wallet == null?'0元':user.wallet/100.0+'元'}">0元</em>
+            </a></li>
             <li><a href="javascript:inputIntoMap('phone')">
                 <span>手机号</span><em id="phone" th:text="${user.phone}">点我修改</em>
             </a></li>

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/user/commonPay/")
-public class CommonPayOrderController extends BaseController {
+public class CommonPayOrderController extends PayBizController<CommonPayOrder> {
     @Autowired
     private UnifiedOrderService unifiedOrderService;
     @Autowired
@@ -36,7 +36,7 @@ public class CommonPayOrderController extends BaseController {
 
     @PostMapping("create")
     @ResponseBody
-    public Object create(@RequestBody Map map) {
+    public Object create(@RequestBody Map map) throws Exception {
         int fee = 0;
         try {
             double dfee = getDouble(map, "fee");
@@ -48,24 +48,7 @@ public class CommonPayOrderController extends BaseController {
         }
 
         String payName = getString(map,"payName");
-        CommonPayOrder charge = commonPayOrderService.newInstance(map);
 
-        WxUser user = getSessionPersistent(WxUser.class);
-
-        charge.setStatus(OrderStatusEnum.CREATED.getCode());
-        charge.setPaid(Boolean.FALSE);
-        charge.setUserId(user.getId());
-        charge.setPayName(payName);
-
-        UnifiedOrder unifiedOrder = unifiedOrderService.newOrder(
-                PayBizEnum.COMMON_PAY,
-                user,
-                payName,
-                charge.getFee().intValue());
-
-        charge.setUnifiedId(unifiedOrder.getId());
-
-        charge = commonPayOrderService.save(charge);
-        return success(charge, "/user/unified/detail?unifiedId=" + unifiedOrder.getId());
+        return create(map,fee);
     }
 }

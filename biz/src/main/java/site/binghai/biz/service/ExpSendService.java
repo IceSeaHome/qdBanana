@@ -8,6 +8,7 @@ import site.binghai.biz.service.dao.ExpSendDao;
 import site.binghai.lib.def.UnifiedOrderMethods;
 import site.binghai.lib.entity.UnifiedOrder;
 import site.binghai.lib.enums.OrderStatusEnum;
+import site.binghai.lib.enums.PayBizEnum;
 import site.binghai.lib.service.BaseService;
 
 import java.util.LinkedHashMap;
@@ -71,6 +72,11 @@ public class ExpSendService extends BaseService<ExpSendOrder> implements Unified
     public String readSimpleInfo(UnifiedOrder order) {
         ExpSendOrder expSendOrder = moreInfo(order);
         return expSendOrder.getExpName();
+    }
+
+    @Override
+    public PayBizEnum getBizType() {
+        return PayBizEnum.EXP_SEND;
     }
 
 

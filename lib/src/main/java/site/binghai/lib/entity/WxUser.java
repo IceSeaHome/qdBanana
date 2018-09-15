@@ -19,6 +19,7 @@ public class WxUser extends BaseEntity implements SessionPersistent {
     private String phone;
     private String openId;
     private Long refereeId; //推荐人id
+    private Integer wallet;
 
     private String usuallyAddress; //常用地址
 

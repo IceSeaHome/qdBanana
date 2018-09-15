@@ -11,6 +11,7 @@ public enum PayBizEnum {
     EXP_SEND(1,"代寄快递"),
     EXP_CHARGE(2,"寄件费用"),
     COMMON_PAY(3,"通用支付单"),
+    VIP_CHARGE(4,"VIP充值"),
     ;
 
     private int code;

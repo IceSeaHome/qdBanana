@@ -73,6 +73,11 @@ public class ExpTakeService extends BaseService<ExpTakeOrder> implements Unified
         return takeOrder.getExpTakeName() + "/" + StringUtil.shorten(takeOrder.getSmsText(), 10);
     }
 
+    @Override
+    public PayBizEnum getBizType() {
+        return PayBizEnum.EXP_TAKE;
+    }
+
     public List<ExpTakeOrder> findByStatusIdDesc(Integer status, Integer page, Integer pageSize) {
         return dao.findAllByStatusOrderByIdDesc(status, new PageRequest(page, pageSize));
     }
