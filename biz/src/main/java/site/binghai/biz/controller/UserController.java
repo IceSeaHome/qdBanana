@@ -25,6 +25,8 @@ public class UserController extends BaseController {
     @GetMapping("myInfo")
     public String myInfo(ModelMap map) {
         WxUser wxUser = getSessionPersistent(WxUser.class);
+        wxUser = wxUserService.findById(wxUser.getId());
+        persistent(wxUser);
         map.put("user", wxUser);
         return "myInfo";
     }
