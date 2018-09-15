@@ -16,6 +16,8 @@ import site.binghai.lib.enums.PayBizEnum;
 import site.binghai.lib.service.UnifiedOrderService;
 import site.binghai.lib.utils.BaseBean;
 
+import javax.transaction.Transactional;
+import java.beans.Transient;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +74,7 @@ public class PayBizServiceFactory extends BaseBean {
     }
 
 
+    @Transactional
     public void onPayNotify(String orderId) throws Exception {
         UnifiedOrder unifiedOrder = unifiedOrderService.findByOrderId(orderId);
         if (unifiedOrder == null || unifiedOrder.getStatus() >= OrderStatusEnum.PAIED.getCode()) {

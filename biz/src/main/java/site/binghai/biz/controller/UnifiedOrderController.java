@@ -75,6 +75,10 @@ public class UnifiedOrderController extends BaseController {
             enableWalletPay = false;
         }
 
+        if (order.getAppCode().equals(PayBizEnum.VIP_CHARGE.getCode())) {
+            enableWalletPay = false;
+        }
+
         map.put("enableWalletPay", enableWalletPay);
         map.put("wxPayUrl", payBizServiceFactory.buildWxPayUrl(order));
         map.put("walletPayUrl", "/user/unified/walletPay?unifiedId=" + unifiedId);

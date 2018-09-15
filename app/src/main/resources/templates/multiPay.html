@@ -28,7 +28,7 @@
     <!--我的订单选项卡-->
     <div id="my-order" class="my-order">
         <br/><br/>
-        <a class="pay" th:href="${enableWalletPay?walletPayUrl:'javascript:insufficient()'}" th:text="${enableWalletPay?'钱包支付':'钱包支付(余额不足)'}">钱包支付</a>
+        <a class="pay" th:href="${enableWalletPay?walletPayUrl:'javascript:insufficient()'}" th:text="${enableWalletPay?'钱包支付':'钱包支付(不可用)'}">钱包支付</a>
         <br/>
         <a class="pay" th:href="${wxPayUrl}">微信支付</a>
     </div>
@@ -43,7 +43,7 @@
         }
 
         function insufficient() {
-            myNotice(false,"余额不足","请先到'我的'页面充值后使用，充值有优惠!")
+            myNotice(false,"余额支付不可用","您的余额不足或本单不支持余额支付")
         }
 
     </script>
