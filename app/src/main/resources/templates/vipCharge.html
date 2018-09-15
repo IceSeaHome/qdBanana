@@ -29,7 +29,7 @@
     <div id="my-order" class="my-order">
         <div th:each="pkg:${pkgs}">
             <br/>
-            <a class="pay" th:href="${'javascript:pay('+pkg.id+')'}" th:text="${'充'+pkg.price/100.0+'得'+pkg.recharge/100.0}">1-1</a>
+            <a class="pay" th:href="${'create?pkgId='+pkg.id}" th:text="${pkg.name}">1-1</a>
         </div>
     </div>
 
