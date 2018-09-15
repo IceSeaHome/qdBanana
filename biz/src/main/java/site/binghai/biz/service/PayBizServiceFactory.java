@@ -15,6 +15,7 @@ import site.binghai.lib.enums.OrderStatusEnum;
 import site.binghai.lib.enums.PayBizEnum;
 import site.binghai.lib.service.UnifiedOrderService;
 import site.binghai.lib.utils.BaseBean;
+import site.binghai.lib.utils.CompareUtils;
 
 import javax.transaction.Transactional;
 import java.beans.Transient;
@@ -81,7 +82,12 @@ public class PayBizServiceFactory extends BaseBean {
             throw new Exception("status not right!");
         }
 
-        unifiedOrder.setStatus(OrderStatusEnum.PAIED.getCode());
+        if(CompareUtils.inAny(PayBizEnum.valueOf(unifiedOrder.getAppCode()),PayBizEnum.COMMON_PAY,PayBizEnum.VIP_CHARGE)){
+            unifiedOrder.setStatus(OrderStatusEnum.COMPLETE.getCode());
+        }else {
+            unifiedOrder.setStatus(OrderStatusEnum.PAIED.getCode());
+        }
+
         unifiedOrderService.update(unifiedOrder);
 
         payEvent(unifiedOrder);

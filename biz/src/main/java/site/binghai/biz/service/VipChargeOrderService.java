@@ -43,7 +43,7 @@ public class VipChargeOrderService extends BaseService<VipChargeOrder> implement
     @Override
     public void onPaid(UnifiedOrder order) {
         VipChargeOrder vipChargeOrder = moreInfo(order);
-        vipChargeOrder.setStatus(OrderStatusEnum.PAIED.getCode());
+        vipChargeOrder.setStatus(OrderStatusEnum.COMPLETE.getCode());
         update(vipChargeOrder);
     }
 

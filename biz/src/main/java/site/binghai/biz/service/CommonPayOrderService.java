@@ -40,7 +40,7 @@ public class CommonPayOrderService extends BaseService<CommonPayOrder> implement
     public void onPaid(UnifiedOrder order) {
         CommonPayOrder commonPayOrder = moreInfo(order);
         commonPayOrder.setPaid(true);
-        commonPayOrder.setStatus(OrderStatusEnum.PAIED.getCode());
+        commonPayOrder.setStatus(OrderStatusEnum.COMPLETE.getCode());
         update(commonPayOrder);
     }
 
