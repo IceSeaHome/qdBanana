@@ -50,30 +50,37 @@ public class PayBizServiceFactory extends BaseBean {
 
     public String buildWxPayUrl(UnifiedOrder unifiedOrder) {
         String url = iceConfig.getWxPayUrl()
-                + "?title=" + unifiedOrder.getTitle()
-                + "&totalFee=" + unifiedOrder.getShouldPay()
-                + "&orderId=" + unifiedOrder.getOrderId();
+            + "?title=" + unifiedOrder.getTitle()
+            + "&totalFee=" + unifiedOrder.getShouldPay()
+            + "&orderId=" + unifiedOrder.getOrderId();
+
+        return url + buildCallbackUrl(unifiedOrder);
+    }
+
+    public String buildCallbackUrl(UnifiedOrder unifiedOrder) {
         if (unifiedOrder.getAppCode().equals(PayBizEnum.EXP_SEND.getCode())) {
-            ExpSendService expSendService = (ExpSendService) get(unifiedOrder.getAppCode());
+            ExpSendService expSendService = (ExpSendService)get(unifiedOrder.getAppCode());
             ExpSendOrder expSendOrder = expSendService.moreInfo(unifiedOrder);
             ExpBrand expBrand = expBrandService.findById(expSendOrder.getExpId());
-            return url + "&callBack=" + expBrand.getServiceUrl();
+            return "&callBack=" + expBrand.getServiceUrl();
         }
-        return url + "&callBack=" + iceConfig.getAppRoot() + "/user/unified/detail?unifiedId=" + unifiedOrder.getId();
+
+        return "&callBack=" + iceConfig.getAppRoot() + "/user/unified/detail?unifiedId=" + unifiedOrder.getId();
     }
 
     @Autowired
     public void setAll(List<UnifiedOrderMethods> bizs) {
         serviceMap = new HashMap<>();
-        if (isEmptyList(bizs)) return;
+        if (isEmptyList(bizs)) {
+            return;
+        }
 
         for (UnifiedOrderMethods biz : bizs) {
             serviceMap.put(biz.getBizType(), biz);
             logger.info("PayBizServiceFactory loaded service {} for {},",
-                    biz.getClass().getSimpleName(), biz.getBizType().getName());
+                biz.getClass().getSimpleName(), biz.getBizType().getName());
         }
     }
-
 
     @Transactional
     public void onPayNotify(String orderId) throws Exception {
@@ -82,9 +89,10 @@ public class PayBizServiceFactory extends BaseBean {
             throw new Exception("status not right!");
         }
 
-        if(CompareUtils.inAny(PayBizEnum.valueOf(unifiedOrder.getAppCode()),PayBizEnum.COMMON_PAY,PayBizEnum.VIP_CHARGE)){
+        if (CompareUtils.inAny(PayBizEnum.valueOf(unifiedOrder.getAppCode()), PayBizEnum.COMMON_PAY,
+            PayBizEnum.VIP_CHARGE)) {
             unifiedOrder.setStatus(OrderStatusEnum.COMPLETE.getCode());
-        }else {
+        } else {
             unifiedOrder.setStatus(OrderStatusEnum.PAIED.getCode());
         }
 
@@ -102,7 +110,7 @@ public class PayBizServiceFactory extends BaseBean {
         PayBizEnum payBiz = PayBizEnum.valueOf(unifiedOrder.getAppCode());
 
         if (payBiz.equals(PayBizEnum.VIP_CHARGE)) {
-            VipChargeOrderService service = (VipChargeOrderService) get(payBiz);
+            VipChargeOrderService service = (VipChargeOrderService)get(payBiz);
             WxUser wxUser = wxUserService.findById(unifiedOrder.getUserId());
             VipChargeOrder vipChargeOrder = service.moreInfo(unifiedOrder);
             VipPkg pkg = JSONObject.parseObject(vipChargeOrder.getPkgInfo(), VipPkg.class);

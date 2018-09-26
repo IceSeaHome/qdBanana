@@ -33,9 +33,9 @@ public class ExpSendController extends BaseController {
     public String prepare(ModelMap map) {
         JSONObject expList = newJSONObject();
         expBrandService.findAll(999)
-                .stream()
-                .filter(v -> v.getEnableSend())
-                .forEach(v -> expList.put(v.getId().toString(), v.getExpName()));
+            .stream()
+            .filter(v -> v.getEnableSend())
+            .forEach(v -> expList.put(v.getId().toString(), v.getExpName()));
 
         map.put("wxUser", getSessionPersistent(WxUser.class));
         map.put("expList", expList);
@@ -47,14 +47,13 @@ public class ExpSendController extends BaseController {
     public Object create(@RequestBody Map map) {
         ExpSendOrder order = expSendService.newInstance(map);
         Long expId = order.getExpId();
-        if(hasEmptyString(expId)) return fail("快递必选的哦~");
+        if (hasEmptyString(expId)) { return fail("快递必选的哦~"); }
         ExpBrand expBrand = expBrandService.findById(expId);
         order.setExpName(expBrand.getExpName());
 
-        if(hasEmptyString(order.getFetchAddr(),order.getFetchPhone(),order.getFetchName())){
+        if (hasEmptyString(order.getFetchAddr(), order.getFetchPhone(), order.getFetchName())) {
             return fail("这几项都是必填项哦~");
         }
-
 
         // 补充业务逻辑
         if (!expBrand.getEnableSend()) {
@@ -64,7 +63,7 @@ public class ExpSendController extends BaseController {
         WxUser user = getSessionPersistent(WxUser.class);
         order.setStatus(OrderStatusEnum.CREATED.getCode());
         order.setPaid(Boolean.FALSE);
-        order.setTotalFee(expBrand.getTakeServiceFee());
+        order.setTotalFee(expBrand.getSendServiceFee());
         order.setUserId(user.getId());
 
         UnifiedOrder unifiedOrder = unifiedOrderService.newOrder(

@@ -47,7 +47,7 @@ public class UnifiedOrderController extends BaseController {
     }
 
     @GetMapping("walletPay")
-    public String walletPay(@RequestParam Long unifiedId, ModelMap map) {
+    public String walletPay(@RequestParam Long unifiedId, String callBack, ModelMap map) {
         WxUser wxUser = updateSessionUser();
         UnifiedOrder order = unifiedOrderService.findById(unifiedId);
         if (wxUser.getWallet() == null || wxUser.getWallet() < order.getShouldPay()) {
@@ -63,7 +63,7 @@ public class UnifiedOrderController extends BaseController {
             logger.error("wallet pay failed,{}", order, e);
         }
 
-        return "redirect:detail?unifiedId=" + unifiedId;
+        return "redirect:" + (callBack == null ? "detail?unifiedId=" + unifiedId : callBack);
     }
 
     @GetMapping("multiPay")
@@ -81,7 +81,8 @@ public class UnifiedOrderController extends BaseController {
 
         map.put("enableWalletPay", enableWalletPay);
         map.put("wxPayUrl", payBizServiceFactory.buildWxPayUrl(order));
-        map.put("walletPayUrl", "/user/unified/walletPay?unifiedId=" + unifiedId);
+        map.put("walletPayUrl",
+            "/user/unified/walletPay?unifiedId=" + unifiedId + payBizServiceFactory.buildCallbackUrl(order));
         return "multiPay";
     }
 
@@ -92,11 +93,10 @@ public class UnifiedOrderController extends BaseController {
         return user;
     }
 
-
     private Map readMap(UnifiedOrder unifiedOrder) {
         return payBizServiceFactory
-                .get(unifiedOrder.getAppCode())
-                .readMap(unifiedOrder);
+            .get(unifiedOrder.getAppCode())
+            .readMap(unifiedOrder);
     }
 
     @GetMapping("list")
@@ -134,8 +134,8 @@ public class UnifiedOrderController extends BaseController {
 
     private Object readSimpleInfo(UnifiedOrder unifiedOrder) {
         return payBizServiceFactory
-                .get(unifiedOrder.getAppCode())
-                .readSimpleInfo(unifiedOrder);
+            .get(unifiedOrder.getAppCode())
+            .readSimpleInfo(unifiedOrder);
     }
 
     @GetMapping("pay")
@@ -198,7 +198,7 @@ public class UnifiedOrderController extends BaseController {
         //todo 取消成功通知
         Object data = null;
         UnifiedOrderMethods service = payBizServiceFactory
-                .get(unifiedOrder.getAppCode());
+            .get(unifiedOrder.getAppCode());
 
         if (service != null) {
             data = service.cancel(unifiedOrder);
