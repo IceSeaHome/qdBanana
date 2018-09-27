@@ -27,7 +27,7 @@
     <div class="banner" id="index-banner">
         <div class="banner-pics">
             <ul class="banner-pics-list OnSale-banner">
-                <li th:each="img:${imgs}"><a ><img th:src="${img.url}" alt=""/></a></li>
+                <li th:each="img:${imgs}"><a th:href="${img.target}"><img th:src="${img.url}" alt=""/></a></li>
             </ul>
         </div>
         <ul class="banner-tit">

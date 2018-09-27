@@ -14,6 +14,7 @@ public class Image extends BaseEntity implements Comparable{
     private Long id;
     private Integer weight;
     private String url;
+    private String target;
     private String name;
 
     @Override
