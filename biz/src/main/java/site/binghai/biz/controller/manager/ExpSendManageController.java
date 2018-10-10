@@ -18,6 +18,7 @@ import site.binghai.lib.utils.TimeTools;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/manage/expSend/")
 public class ExpSendManageController extends BaseController {
@@ -30,14 +31,18 @@ public class ExpSendManageController extends BaseController {
     private UnifiedOrderService unifiedOrderService;
 
     @GetMapping("list")
-    private Object list(Long timeStart, Long timeEnd) {
+    private Object list(Long timeStart, Long timeEnd, Long expBrand) {
         Long[] today = TimeTools.today();
-        if(hasEmptyString(timeEnd,timeStart)){
+        if (hasEmptyString(timeEnd, timeStart)) {
             timeStart = today[0];
             timeEnd = today[1];
         }
 
         List<ExpSendOrder> ls = sendService.findTimeBetween(timeStart, timeEnd);
+
+        ls = ls.stream()
+            .filter(v -> expBrand == null || v.getExpId().equals(expBrand))
+            .collect(Collectors.toList());
 
         JSONObject data = new JSONObject();
         data.put("all", formatData(ls));
@@ -56,15 +61,15 @@ public class ExpSendManageController extends BaseController {
             JSONObject infos = new JSONObject();
 
             infos.put("下单时间", l.getCreatedTime());
-            infos.put("流水序号",l.getId());
-//            infos.put("用户序号",l.getUserId());
-            infos.put("取件手机",l.getFetchPhone());
-            infos.put("取件姓名",l.getFetchName());
-            infos.put("取件地址",l.getFetchAddr());
+            infos.put("流水序号", l.getId());
+            //            infos.put("用户序号",l.getUserId());
+            infos.put("取件手机", l.getFetchPhone());
+            infos.put("取件姓名", l.getFetchName());
+            infos.put("取件地址", l.getFetchAddr());
             infos.put("本单费用", String.format("%.2f", l.getTotalFee() / 100.0));
-            infos.put("用户备注",l.getRemark());
-            infos.put("快递单号",l.getExpNo());
-            infos.put("寄件补收",expChargeService.sumExtraFee(l.getId()));
+            infos.put("用户备注", l.getRemark());
+            infos.put("快递单号", l.getExpNo());
+            infos.put("寄件补收", expChargeService.sumExtraFee(l.getId()));
             obj.put("infos", infos);
             array.add(obj);
         }
@@ -72,7 +77,7 @@ public class ExpSendManageController extends BaseController {
         return array;
     }
 
-//    @PostMapping("update")
+    //    @PostMapping("update")
     public Object update(@RequestBody Map map) {
         try {
             sendService.updateAndSave(getSessionPersistent(Manager.class), map);
@@ -83,7 +88,6 @@ public class ExpSendManageController extends BaseController {
 
         return success();
     }
-
 
     @GetMapping("accept")
     public Object accept(@RequestParam Long unifiedId) {
@@ -100,8 +104,8 @@ public class ExpSendManageController extends BaseController {
     }
 
     @GetMapping("complete")
-    public Object complete(@RequestParam Long unifiedId,@RequestParam String expNo){
-        if(hasEmptyString(expNo)){
+    public Object complete(@RequestParam Long unifiedId, @RequestParam String expNo) {
+        if (hasEmptyString(expNo)) {
             return fail("快递单号未录入!");
         }
         ExpSendOrder expSendOrder = sendService.findById(unifiedId);
@@ -116,7 +120,6 @@ public class ExpSendManageController extends BaseController {
 
         return success();
     }
-
 
     @GetMapping("cancel")
     public Object cancel(@RequestParam Long unifiedId) {

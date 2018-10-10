@@ -27,14 +27,19 @@ public class ExpTakeManageController extends BaseController {
     private UnifiedOrderService unifiedOrderService;
 
     @GetMapping("list")
-    private Object list(Long timeStart, Long timeEnd) {
+    private Object list(Long timeStart, Long timeEnd, Long expBrand) {
         Long[] today = TimeTools.today();
-        if(hasEmptyString(timeEnd,timeStart)){
+        if (hasEmptyString(timeEnd, timeStart)) {
             timeStart = today[0];
             timeEnd = today[1];
         }
 
         List<ExpTakeOrder> ls = takeService.findTimeBetween(timeStart, timeEnd);
+
+        ls = ls.stream()
+            .filter(v -> expBrand == null || v.getExpId().equals(expBrand))
+            .collect(Collectors.toList());
+
         JSONObject data = new JSONObject();
         data.put("all", formatData(ls));
         data.put("paid", formatData(ls.stream().filter(v -> v.getPaid()).collect(Collectors.toList())));
@@ -54,7 +59,7 @@ public class ExpTakeManageController extends BaseController {
             infos.put("下单时间", l.getCreatedTime());
             infos.put("流水序号", l.getExpId());
             infos.put("取件姓名", l.getExpTakeName());
-//            infos.put("用户序号", l.getUserId());
+            //            infos.put("用户序号", l.getUserId());
             infos.put("取件手机", l.getExpTakePhone());
             infos.put("配送手机", l.getSendPhone());
             infos.put("配送地址", l.getSendAddr());
@@ -94,7 +99,7 @@ public class ExpTakeManageController extends BaseController {
     }
 
     @GetMapping("complete")
-    public Object complete(@RequestParam Long unifiedId){
+    public Object complete(@RequestParam Long unifiedId) {
         ExpTakeOrder expTakeOrder = takeService.findById(unifiedId);
         if (expTakeOrder == null || !(OrderStatusEnum.PROCESSING.getCode() == expTakeOrder.getStatus())) {
             return fail("status not right!");
@@ -106,7 +111,6 @@ public class ExpTakeManageController extends BaseController {
 
         return success();
     }
-
 
     @GetMapping("cancel")
     public Object cancel(@RequestParam Long unifiedId) {

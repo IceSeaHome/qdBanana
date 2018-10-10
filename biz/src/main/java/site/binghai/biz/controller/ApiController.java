@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import site.binghai.biz.entity.ApiToken;
+import site.binghai.biz.entity.ExpBrand;
 import site.binghai.biz.service.ApiTokenService;
+import site.binghai.biz.service.ExpBrandService;
 import site.binghai.biz.service.WxUserService;
 import site.binghai.lib.controller.BaseController;
 import site.binghai.lib.entity.UnifiedOrder;
@@ -19,6 +21,7 @@ import site.binghai.lib.utils.TimeTools;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/private/")
@@ -30,6 +33,18 @@ public class ApiController extends BaseController {
     private WxUserService wxUserService;
     @Autowired
     private UnifiedOrderService unifiedOrderService;
+    @Autowired
+    private ExpBrandService expBrandService;
+
+    @GetMapping("expBrandList")
+    public Object expBrandList(Integer type) {
+        List<ExpBrand> expBrands = expBrandService.findAll(9999);
+        expBrands = expBrands.stream()
+            .filter(v -> type == 0 ? v.getEnableTake() : v.getEnableSend())
+            .collect(Collectors.toList());
+
+        return success(expBrands, null);
+    }
 
     @GetMapping("userList")
     public Object userList(@RequestParam String scode, @RequestParam Integer page) {
@@ -37,7 +52,6 @@ public class ApiController extends BaseController {
         if (!checkToken(scode)) {
             return fail("秘钥不正确!");
         }
-
 
         List<WxUser> userList = wxUserService.findAll(page < 0 ? 0 : page, 100);
         JSONObject data = new JSONObject();
@@ -48,7 +62,6 @@ public class ApiController extends BaseController {
 
         return data;
     }
-
 
     @GetMapping("orderList")
     public Object orderList(@RequestParam String scode, @RequestParam Integer page) {
@@ -66,7 +79,6 @@ public class ApiController extends BaseController {
         return data;
     }
 
-
     public boolean checkToken(String tokenString) {
         if (StringUtils.isBlank(tokenString)) {
             return false;
@@ -75,9 +87,9 @@ public class ApiController extends BaseController {
         Map<String, ApiToken> tokenMap = new HashMap<>();
 
         long count = apiTokenService.findAll(999)
-                .stream().filter(v -> tokenString.equals(v.getToken()))
-                .peek(v -> tokenMap.put(v.getToken(), v))
-                .count();
+            .stream().filter(v -> tokenString.equals(v.getToken()))
+            .peek(v -> tokenMap.put(v.getToken(), v))
+            .count();
 
         if (count <= 0) {
             return false;
