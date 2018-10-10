@@ -21,7 +21,7 @@ import java.util.Map;
 
 @Controller
 @RequestMapping("/user/expSend/")
-public class ExpSendController extends BaseController {
+public class ExpSendController extends PayBizController<ExpSendOrder> {
     @Autowired
     private ExpSendService expSendService;
     @Autowired
@@ -45,6 +45,10 @@ public class ExpSendController extends BaseController {
     @PostMapping("create")
     @ResponseBody
     public Object create(@RequestBody Map map) {
+        if (sysConfigService.isSystemClosed()) {
+            return fail(sysConfigService.getCloseReason());
+        }
+
         ExpSendOrder order = expSendService.newInstance(map);
         Long expId = order.getExpId();
         if (hasEmptyString(expId)) { return fail("快递必选的哦~"); }

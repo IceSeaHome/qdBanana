@@ -37,7 +37,7 @@ public class ApiController extends BaseController {
     private ExpBrandService expBrandService;
 
     @GetMapping("expBrandList")
-    public Object expBrandList(Integer type) {
+    public Object expBrandList(@RequestParam Integer type) {
         List<ExpBrand> expBrands = expBrandService.findAll(9999);
         expBrands = expBrands.stream()
             .filter(v -> type == 0 ? v.getEnableTake() : v.getEnableSend())

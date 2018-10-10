@@ -142,7 +142,7 @@ public abstract class BaseService<T extends BaseEntity> extends BaseBean {
     /**
      * 使用map更新entity中除id外的其他字段
      */
-    private T updateParams(T t, Map map) {
+    public T updateParams(T t, Map map) {
         Long id = t.getId();
         JSONObject item = JSONObject.parseObject(JSONObject.toJSONString(t));
         item.putAll(map);

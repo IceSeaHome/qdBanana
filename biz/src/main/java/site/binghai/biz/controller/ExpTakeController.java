@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import site.binghai.biz.entity.ExpBrand;
+import site.binghai.biz.entity.ExpSendOrder;
 import site.binghai.biz.entity.ExpTakeOrder;
 import site.binghai.biz.service.ExpBrandService;
 import site.binghai.biz.service.ExpTakeService;
@@ -23,7 +24,7 @@ import java.util.Map;
  */
 @Controller
 @RequestMapping("/user/expTake/")
-public class ExpTakeController extends BaseController {
+public class ExpTakeController extends PayBizController<ExpSendOrder> {
 
     @Autowired
     private ExpBrandService expBrandService;
@@ -36,9 +37,9 @@ public class ExpTakeController extends BaseController {
     public String prepare(ModelMap map) {
         JSONObject expList = newJSONObject();
         expBrandService.findAll(999)
-                .stream()
-                .filter(v -> v.getEnableTake())
-                .forEach(v -> expList.put(v.getId().toString(), v.getExpName()));
+            .stream()
+            .filter(v -> v.getEnableTake())
+            .forEach(v -> expList.put(v.getId().toString(), v.getExpName()));
 
         map.put("wxUser", getSessionPersistent(WxUser.class));
         map.put("expList", expList);
@@ -48,10 +49,14 @@ public class ExpTakeController extends BaseController {
     @PostMapping("create")
     @ResponseBody
     public Object create(@RequestBody Map map) {
+        if(sysConfigService.isSystemClosed()){
+            return fail(sysConfigService.getCloseReason());
+        }
+
         ExpTakeOrder order = expTakeService.newInstance(map);
         Long expId = order.getExpId();
-        if (expId == null) return fail("快递必选哦");
-        if (hasEmptyString(getString(map, "smsText"))) return fail("取件码必填哦");
+        if (expId == null) { return fail("快递必选哦"); }
+        if (hasEmptyString(getString(map, "smsText"))) { return fail("取件码必填哦"); }
         ExpBrand expBrand = expBrandService.findById(expId);
         order.setExpName(expBrand.getExpName());
 
@@ -68,10 +73,10 @@ public class ExpTakeController extends BaseController {
         order.setUserId(user.getId());
 
         UnifiedOrder unifiedOrder = unifiedOrderService.newOrder(
-                PayBizEnum.EXP_TAKE,
-                user,
-                expBrand.getExpName() + "代取",
-                order.getTotalFee().intValue());
+            PayBizEnum.EXP_TAKE,
+            user,
+            expBrand.getExpName() + "代取",
+            order.getTotalFee().intValue());
 
         order.setUnifiedId(unifiedOrder.getId());
 

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import site.binghai.biz.entity.ExpChargeOrder;
 import site.binghai.biz.entity.PayBizEntity;
 import site.binghai.biz.service.PayBizServiceFactory;
+import site.binghai.biz.service.SysConfigService;
 import site.binghai.lib.controller.BaseController;
 import site.binghai.lib.def.UnifiedOrderMethods;
 import site.binghai.lib.entity.UnifiedOrder;
@@ -25,6 +26,9 @@ public abstract class PayBizController<T extends PayBizEntity> extends BaseContr
 
     @Autowired
     private UnifiedOrderService unifiedOrderService;
+
+    @Autowired
+    public SysConfigService sysConfigService;
 
     public PayBizServiceFactory getPayBizServiceFactory() {
         return payBizServiceFactory;
@@ -59,6 +63,10 @@ public abstract class PayBizController<T extends PayBizEntity> extends BaseContr
     }
 
     public JSONObject create(Map map, int fee) throws Exception {
+        if(sysConfigService.isSystemClosed()){
+            return fail(sysConfigService.getCloseReason());
+        }
+
         T uorder = getService().newInstance(map);
 
         WxUser user = getSessionPersistent(WxUser.class);
