@@ -40,7 +40,7 @@ public class ApiController extends BaseController {
     public Object expBrandList(@RequestParam Integer type) {
         List<ExpBrand> expBrands = expBrandService.findAll(9999);
         expBrands = expBrands.stream()
-            .filter(v -> type == 0 ? v.getEnableTake() : v.getEnableSend())
+            .filter(v -> type == 3 || (type == 0 ? v.getEnableTake() : v.getEnableSend()))
             .collect(Collectors.toList());
 
         return success(expBrands, null);
