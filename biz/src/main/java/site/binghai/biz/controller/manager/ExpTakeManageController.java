@@ -2,6 +2,7 @@ package site.binghai.biz.controller.manager;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.http.util.Asserts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import site.binghai.biz.entity.ExpTakeOrder;
@@ -86,6 +87,7 @@ public class ExpTakeManageController extends BaseController {
 
     @GetMapping("accept")
     public Object accept(@RequestParam Long unifiedId) {
+        Asserts.check(readOnly(), "read only mananger!");
         ExpTakeOrder expTakeOrder = takeService.findById(unifiedId);
         if (expTakeOrder == null || !(OrderStatusEnum.PAIED.getCode() == expTakeOrder.getStatus())) {
             return fail("status not right!");
@@ -100,6 +102,7 @@ public class ExpTakeManageController extends BaseController {
 
     @GetMapping("complete")
     public Object complete(@RequestParam Long unifiedId) {
+        Asserts.check(readOnly(), "read only mananger!");
         ExpTakeOrder expTakeOrder = takeService.findById(unifiedId);
         if (expTakeOrder == null || !(OrderStatusEnum.PROCESSING.getCode() == expTakeOrder.getStatus())) {
             return fail("status not right!");
@@ -114,6 +117,7 @@ public class ExpTakeManageController extends BaseController {
 
     @GetMapping("cancel")
     public Object cancel(@RequestParam Long unifiedId) {
+        Asserts.check(readOnly(), "read only mananger!");
         if (unifiedOrderService.cancel(unifiedId)) {
             UnifiedOrder unifiedOrder = new UnifiedOrder();
             unifiedOrder.setId(unifiedId);

@@ -1,5 +1,6 @@
 package site.binghai.biz.controller.manager;
 
+import org.apache.http.util.Asserts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,7 @@ public class SystemController extends BaseController {
 
     @PostMapping("update")
     public Object update(@RequestBody Map map){
+        Asserts.check(readOnly(), "read only mananger!");
         SysConfig config = sysConfigService.newInstance(map);
         if(hasEmptyString(config.getCloseMessage(),config.getCloseSystem())){
             return fail("设置不完整!");

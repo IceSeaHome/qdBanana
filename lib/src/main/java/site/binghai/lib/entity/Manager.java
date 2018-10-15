@@ -17,6 +17,7 @@ public class Manager extends BaseEntity implements SessionPersistent {
     private String passWord;
     private String nickName;
     private Boolean forbidden;
+    private Boolean readOnly;
 
     @Override
     public String sessionTag() {

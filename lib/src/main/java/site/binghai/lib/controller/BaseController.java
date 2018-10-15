@@ -6,6 +6,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import site.binghai.lib.entity.Manager;
 import site.binghai.lib.entity.SessionDataBundle;
 import site.binghai.lib.interfaces.SessionPersistent;
 import site.binghai.lib.utils.BaseBean;
@@ -26,6 +27,10 @@ public class BaseController extends BaseBean {
         return "commonResp";
     }
 
+    public boolean readOnly() {
+        return getSessionPersistent(Manager.class).getReadOnly();
+    }
+
     private static Map<Class, SessionPersistent> instanceHolder = new HashMap<>();
 
     /**
@@ -35,7 +40,7 @@ public class BaseController extends BaseBean {
         RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
         ServletRequestAttributes servletRequestAttributes;
         if (requestAttributes instanceof ServletRequestAttributes) {
-            servletRequestAttributes = (ServletRequestAttributes) requestAttributes;
+            servletRequestAttributes = (ServletRequestAttributes)requestAttributes;
             return servletRequestAttributes.getRequest();
         }
         return null;
@@ -48,7 +53,7 @@ public class BaseController extends BaseBean {
     public <T extends SessionPersistent> T getSessionPersistent(Class<T> sp) {
         try {
             String tag = getInstanceTag(sp);
-            return (T) getServletRequest().getSession().getAttribute(tag);
+            return (T)getServletRequest().getSession().getAttribute(tag);
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -58,7 +63,7 @@ public class BaseController extends BaseBean {
     }
 
     private <T extends SessionPersistent> String getInstanceTag(Class<T> sp)
-            throws IllegalAccessException, InstantiationException {
+        throws IllegalAccessException, InstantiationException {
         if (instanceHolder.get(sp) == null) {
             instanceHolder.put(sp, sp.newInstance());
         }

@@ -2,6 +2,7 @@ package site.binghai.biz.controller.manager;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.http.util.Asserts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import site.binghai.biz.entity.ExpSendOrder;
@@ -79,6 +80,7 @@ public class ExpSendManageController extends BaseController {
 
     //    @PostMapping("update")
     public Object update(@RequestBody Map map) {
+        Asserts.check(readOnly(), "read only mananger!");
         try {
             sendService.updateAndSave(getSessionPersistent(Manager.class), map);
         } catch (Exception e) {
@@ -91,6 +93,7 @@ public class ExpSendManageController extends BaseController {
 
     @GetMapping("accept")
     public Object accept(@RequestParam Long unifiedId) {
+        Asserts.check(readOnly(), "read only mananger!");
         ExpSendOrder expSendOrder = sendService.findById(unifiedId);
         if (expSendOrder == null || !(OrderStatusEnum.PAIED.getCode() == expSendOrder.getStatus())) {
             return fail("status not right!");
@@ -105,6 +108,7 @@ public class ExpSendManageController extends BaseController {
 
     @GetMapping("complete")
     public Object complete(@RequestParam Long unifiedId, @RequestParam String expNo) {
+        Asserts.check(readOnly(), "read only mananger!");
         if (hasEmptyString(expNo)) {
             return fail("快递单号未录入!");
         }
@@ -123,6 +127,7 @@ public class ExpSendManageController extends BaseController {
 
     @GetMapping("cancel")
     public Object cancel(@RequestParam Long unifiedId) {
+        Asserts.check(readOnly(), "read only mananger!");
         if (unifiedOrderService.cancel(unifiedId)) {
             UnifiedOrder unifiedOrder = new UnifiedOrder();
             unifiedOrder.setId(unifiedId);
