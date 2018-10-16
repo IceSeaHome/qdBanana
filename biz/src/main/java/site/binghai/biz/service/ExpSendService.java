@@ -11,9 +11,7 @@ import site.binghai.lib.enums.OrderStatusEnum;
 import site.binghai.lib.enums.PayBizEnum;
 import site.binghai.lib.service.BaseService;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ExpSendService extends BaseService<ExpSendOrder> implements UnifiedOrderMethods<ExpSendOrder> {
@@ -47,16 +45,16 @@ public class ExpSendService extends BaseService<ExpSendOrder> implements Unified
         ExpSendOrder expSendOrder = moreInfo(order);
         Map data = new LinkedHashMap();
         data.put("下单时间", expSendOrder.getCreatedTime());
-        if(!hasEmptyString(expSendOrder.getExpNo())){
-            data.put("快递单号",expSendOrder.getExpNo());
+        if (!hasEmptyString(expSendOrder.getExpNo())) {
+            data.put("快递单号", expSendOrder.getExpNo());
         }
-        data.put("快递名称",expSendOrder.getExpName());
-        data.put("联系姓名",expSendOrder.getFetchName());
-        data.put("联系手机",expSendOrder.getFetchPhone());
-        data.put("取件地址",expSendOrder.getFetchAddr());
-        data.put("订单备注",expSendOrder.getRemark());
-        data.put("订单总额",expSendOrder.getTotalFee()/100.0);
-        data.put("寄件补收",expChargeService.sumExtraFee(expSendOrder.getId()));
+        data.put("快递名称", expSendOrder.getExpName());
+        data.put("联系姓名", expSendOrder.getFetchName());
+        data.put("联系手机", expSendOrder.getFetchPhone());
+        data.put("取件地址", expSendOrder.getFetchAddr());
+        data.put("订单备注", expSendOrder.getRemark());
+        data.put("订单总额", expSendOrder.getTotalFee() / 100.0);
+        data.put("寄件补收", expChargeService.sumExtraFee(expSendOrder.getId()));
         return data;
     }
 
@@ -79,12 +77,36 @@ public class ExpSendService extends BaseService<ExpSendOrder> implements Unified
         return PayBizEnum.EXP_SEND;
     }
 
-
     public List<ExpSendOrder> findTimeBetween(Long timeStart, Long timeEnd) {
         return dao.findByCreatedBetween(timeStart, timeEnd);
     }
 
     public List<ExpSendOrder> findByStatusIdDesc(Integer status, Integer page, Integer pageSize) {
         return dao.findAllByStatusOrderByIdDesc(status, new PageRequest(page, pageSize));
+    }
+
+    public List<ExpSendOrder> search(String search) {
+        Map<Long, ExpSendOrder> ret = new HashMap<>();
+        List<ExpSendOrder> ls = findByPhone(search);
+        if (!isEmptyList(ls)) {
+            ls.forEach(v -> ret.put(v.getId(), v));
+        }
+        ls = findByName(search);
+        if (!isEmptyList(ls)) {
+            ls.forEach(v -> ret.put(v.getId(), v));
+        }
+        return new ArrayList<>(ret.values());
+    }
+
+    public List<ExpSendOrder> findByPhone(String phone) {
+        ExpSendOrder ex = new ExpSendOrder();
+        ex.setFetchPhone(phone);
+        return query(ex);
+    }
+
+    public List<ExpSendOrder> findByName(String name) {
+        ExpSendOrder ex = new ExpSendOrder();
+        ex.setFetchName(name);
+        return query(ex);
     }
 }

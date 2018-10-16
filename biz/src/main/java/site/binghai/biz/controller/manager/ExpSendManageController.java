@@ -2,6 +2,7 @@ package site.binghai.biz.controller.manager;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.http.util.Asserts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,26 @@ public class ExpSendManageController extends BaseController {
     private ExpSendService sendService;
     @Autowired
     private UnifiedOrderService unifiedOrderService;
+
+    @PostMapping("search")
+    public Object search(@RequestBody Map map){
+        String search = getString(map,"search");
+        if(hasEmptyString(search)){
+            return fail("必须输入人名或手机号!");
+        }
+
+        List<ExpSendOrder> ls = sendService.search(search);
+        if(isEmptyList(ls)){
+            return fail("没有找到任何记录!");
+        }
+
+        JSONObject data = new JSONObject();
+
+        data.put("all", formatData(ls));
+        data.put("paid", formatData(ls.stream().filter(v -> v.getPaid()).collect(Collectors.toList())));
+        data.put("other", formatData(ls.stream().filter(v -> !v.getPaid()).collect(Collectors.toList())));;
+        return success(data, null);
+    }
 
     @GetMapping("list")
     private Object list(Long timeStart, Long timeEnd, Long expBrand) {

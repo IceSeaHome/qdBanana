@@ -12,9 +12,7 @@ import site.binghai.lib.enums.PayBizEnum;
 import site.binghai.lib.service.BaseService;
 import site.binghai.lib.utils.StringUtil;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ExpTakeService extends BaseService<ExpTakeOrder> implements UnifiedOrderMethods<ExpTakeOrder> {
@@ -84,5 +82,30 @@ public class ExpTakeService extends BaseService<ExpTakeOrder> implements Unified
 
     public List<ExpTakeOrder> findTimeBetween(Long timeStart, Long timeEnd) {
         return dao.findByCreatedBetween(timeStart, timeEnd);
+    }
+
+    public List<ExpTakeOrder> search(String search) {
+        Map<Long, ExpTakeOrder> ret = new HashMap<>();
+        List<ExpTakeOrder> ls = findByPhone(search);
+        if (!isEmptyList(ls)) {
+            ls.forEach(v -> ret.put(v.getId(), v));
+        }
+        ls = findByName(search);
+        if (!isEmptyList(ls)) {
+            ls.forEach(v -> ret.put(v.getId(), v));
+        }
+        return new ArrayList<>(ret.values());
+    }
+
+    public List<ExpTakeOrder> findByName(String name){
+        ExpTakeOrder ex = new ExpTakeOrder();
+        ex.setExpTakeName(name);
+        return query(ex);
+    }
+
+    public List<ExpTakeOrder> findByPhone(String phone){
+        ExpTakeOrder ex = new ExpTakeOrder();
+        ex.setExpTakePhone(phone);
+        return query(ex);
     }
 }
