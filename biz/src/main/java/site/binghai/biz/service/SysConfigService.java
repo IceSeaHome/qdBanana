@@ -32,7 +32,7 @@ public class SysConfigService extends BaseService<SysConfig> {
 
     @Transactional
     public void setSystem(SysConfig config) {
-        delete(1L);
-        save(config);
+        config.setId(1L);
+        update(config);
     }
 }
